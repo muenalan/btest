@@ -14,10 +14,6 @@ Per default produces TAP (https://testanything.org/) compatible output.
 
 source /path/to/btest.bash
 
-export BT_DEBUG=1
-
-COVERAGE="testname1" # set to 'full' for all tests
-
 # tests
 
 bt_begin 01_testname1 1 

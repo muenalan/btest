@@ -1,2 +1,2 @@
 # btest
-structure bash scripts as tests
+Bash single file library for tests

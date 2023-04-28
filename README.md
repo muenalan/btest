@@ -20,8 +20,6 @@ COVERAGE="testname1" # set to 'full' for all tests
 
 # tests
 
-bt_ignore_if $( [[ ! "$COVERAGE" =~ "testname1" ]] || [[ "$COVERAGE" == "full" ]] && echo 1 ) 
-
 bt_begin 01_testname1 1 
 
   bt_declare title1

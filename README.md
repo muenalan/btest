@@ -1,11 +1,11 @@
 # btest
-Bash single file library for tests
+Compact bash library for testing software
 
 ## Description
-Bash library for testing software commands. Takes some inspiration from Test::More, and is compatible when output is set to TAP.
+A single-file bash library for testing software commands. 
 
 ## Output
-Per default produces TAP (https://testanything.org/) compatible output. See btest_summary
+Per default produces TAP (https://testanything.org/) compatible output. 
 
 ## Template
 

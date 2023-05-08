@@ -7,9 +7,11 @@
 
 # variables
 
-export BT_VERSION=V0.001
+export BT_VERSION=V0.002
 
 export BT_REPORT=""
+
+export BT_EPOCH_DELTA_MIN=0
 
 if [[ ! "$BT_DEBUG" ]]; then
 
@@ -81,6 +83,8 @@ function bt_begin
         export BT_COUNT_NOK=0
         export BT_COUNT_SKIPPED=0
 
+        export BT_EPOCH_BEGIN=$(date +%s)
+	
         bt_echo -e "\n\nBT_BEGIN(TITLE1=${BT_TITLE1}, TITLE2=${BT_TITLE2}, EXPECTED=${BT_COUNT_EXPECTED})"
 
     fi
@@ -186,6 +190,13 @@ function bt_end
 {
     if [[ ! "$BT_IGNORE_NEXT" ]]; then
 
+        BT_EPOCH_END=$(date +%s)
+
+        let BT_EPOCH_DELTA=BT_EPOCH_END-BT_EPOCH_BEGIN
+
+        BT_EPOCH_DELTA_FORMATTED=`date +%H:%M:%S -ud @${BT_EPOCH_DELTA}`
+
+	
         if [[ $BT_DONE == $BT_EXPECTED ]]; then
 	
 	        BT_END_COUNT=BT_END_COUNT_DONE_EXPECTED
@@ -220,9 +231,17 @@ function bt_end
             BT_VERDICT_OKAY_SHORT="ok"
         fi
         
-        bt_echo "BT_STATUS(TITLE1=${BT_TITLE1}, OK=${BT_COUNT_OK}, NOK=${BT_COUNT_NOK}, SKIPPED=${BT_COUNT_SKIPPED}) : $BT_VERDICT_OKAY"
 
-        FORMATTED="${BT_VERDICT_OKAY_SHORT} - ${BT_TITLE1}"
+        bt_echo "BT_STATUS(TITLE1=${BT_TITLE1}, OK=${BT_COUNT_OK}, NOK=${BT_COUNT_NOK}, SKIPPED=${BT_COUNT_SKIPPED}, BT_EPOCH_DELTA_FORMATTED=${BT_EPOCH_DELTA_FORMATTED}) : $BT_VERDICT_OKAY"
+
+	if [ "$BT_EPOCH_DELTA" -le $BT_EPOCH_DELTA_MIN ]; then
+
+	        FORMATTED="${BT_VERDICT_OKAY_SHORT} - ${BT_TITLE1}"
+
+	    else
+
+	        FORMATTED="${BT_VERDICT_OKAY_SHORT} - ${BT_TITLE1} (t=$BT_EPOCH_DELTA_FORMATTED)"
+	fi
 
         if [[ "$BT_REPORT" ]]; then
             BT_REPORT="${BT_REPORT};$FORMATTED"
@@ -241,6 +260,8 @@ function bt_end
 
         unset BT_SUBTITLE1
 
+        unset BT_EPOCH_BEGIN
+	
     else
 
         unset BT_IGNORE_NEXT
@@ -317,6 +338,15 @@ function bt_selftest
 
     bt_end
 
+    bt_begin oktest5secs 1
+
+      bt_declare step1
+
+      sleep 5
+      
+      bt_ok
+
+    bt_end
 
     bt_begin noktest 1
 

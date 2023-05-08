@@ -107,8 +107,8 @@ bt_begin
 
 bt_end
 
-bt_ignore_next
 
+bt_ignore_next # invalidates also the bt_if statement
 
 bt_if 1
 

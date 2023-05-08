@@ -2,7 +2,7 @@
 Compact single-file bash library for testing software
 
 ## Description
-A single-file bash library for testing software commands. Tests are grouped into testblocks.
+Powerful library for testing software commands in shell environments. Tests and subtests are grouped into testblocks, allowing for clearer development and organization.
 
 ## Output
 Per default produces [TAP](https://testanything.org/) compatible output. 

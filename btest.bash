@@ -46,6 +46,17 @@ function bt_ignore_next
     export BT_IGNORE_NEXT=1    
 }
 
+function bt_if
+{
+    bt_echo "BT_IF(ARG1='$1')"
+    
+    if [[ ! "$1" ]]; then
+
+        export BT_IGNORE_NEXT=1
+
+    fi
+}
+
 function bt_ignore_if
 {
     bt_echo "BT_INGORE_IF(ARG1='$1')"
@@ -328,6 +339,17 @@ function bt_summary
 function bt_selftest
 {
     bt_comment "BT_VERSION=$BT_VERSION - bt_selftest() - expects one test to fail"
+
+    bt_if 1
+
+    bt_begin iftest1 1 
+
+      bt_declare step1
+
+      bt_ok
+
+    bt_end
+
 
     bt_begin skiptest 1 
 

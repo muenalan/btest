@@ -14,7 +14,8 @@ COVERAGE="notebook1, notebook3"
 
 # tests
 
-bt_ignore_if $( [[ ! "$COVERAGE" =~ "notebook1" ]] || [[ "$COVERAGE" == "full" ]] && echo 1 ) 
+
+bt_if $( [[ "$COVERAGE" =~ "notebook1" ]] || [[ "$COVERAGE" == "full" ]] && echo 1 ) 
 
 bt_begin 01_notebook1 1 
 
@@ -29,7 +30,7 @@ bt_begin 01_notebook1 1
 bt_end
 
 
-bt_ignore_if $( [[ ! "$COVERAGE" =~ "notebook2" ]] || [[ "$COVERAGE" == "full" ]] && echo 1 ) 
+bt_if $( [[ "$COVERAGE" =~ "notebook2" ]] || [[ "$COVERAGE" == "full" ]] && echo 1 ) 
 
 bt_begin 02_notebook2 2
 
@@ -51,7 +52,7 @@ bt_begin 02_notebook2 2
 bt_end
 
 
-bt_ignore_if $( [[ ! "$COVERAGE" =~ "notebook3" ]] || [[ "$COVERAGE" == "full" ]] && echo 1 ) 
+bt_if $( [[ "$COVERAGE" =~ "notebook3" ]] || [[ "$COVERAGE" == "full" ]] && echo 1 ) 
 
 bt_begin 03_notebook3 4
 

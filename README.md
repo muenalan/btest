@@ -108,8 +108,11 @@ bt_begin
 bt_end
 ```
 
+## bt_if
+Conditionally execute bt_begin/bt_end block. Note that normal commands will be always executed, however bt_ commands will be ignored.
+
 ## bt_ignore_if condition
-Conditionally ignore bt_begin/bt_end block. Note that commands will be still executed, however bt_ commands will be ignored.
+Conditionally ignore bt_begin/bt_end block. Note that normal commands will be always executed, however bt_ commands will be ignored.
 
 # Block functions (inside a bt_begin/bt_end block)
 

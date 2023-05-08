@@ -77,6 +77,16 @@ Following environment is used to change the behavior of *btest*:
     BT_EPOCH_DELTA_MIN - minimal number of seconds a test uses, so the time is included in the testreport (default=0, always).
 
 # Structural functions
+The main concept of *btest* are test blocks. These are sections, which are enclosed by bt_begin/bt_end.
+```
+bt_begin
+
+  ...
+  ... block functions
+  ...
+
+bt_end
+```
 
 ## bt_begin <testname> <expected>
 Start a block of texts, encompassing <expected> number of *ok*.
@@ -86,6 +96,17 @@ End of bt_begin block.
 
 ## bt_ignore_next
 Completely ignore bt_begin/bt_end block. Note that commands will be still executed, however bt_ commands will be ignored.
+```
+bt_ignore_next
+
+bt_begin
+
+  ...
+  ... All bt_ block functions are ignored
+  ...
+
+bt_end
+```
 
 ## bt_ignore_if condition
 Conditionally ignore bt_begin/bt_end block. Note that commands will be still executed, however bt_ commands will be ignored.

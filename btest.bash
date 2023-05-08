@@ -7,7 +7,7 @@
 
 # variables
 
-export BT_VERSION=V0.002
+export BT_VERSION=V0.003
 
 export BT_REPORT=""
 
@@ -194,7 +194,15 @@ function bt_end
 
         let BT_EPOCH_DELTA=BT_EPOCH_END-BT_EPOCH_BEGIN
 
-        BT_EPOCH_DELTA_FORMATTED=`date +%H:%M:%S -ud @${BT_EPOCH_DELTA}`
+        if [[ "$OSTYPE" =~ darwin ]]; then
+            
+            BT_EPOCH_DELTA_FORMATTED=`date -u -j -f "%s" ${BT_EPOCH_DELTA} "+%H:%M:%S"`
+        
+        else
+
+            BT_EPOCH_DELTA_FORMATTED=`date +%H:%M:%S -ud @${BT_EPOCH_DELTA}`
+
+        fi
 
 	
         if [[ $BT_DONE == $BT_EXPECTED ]]; then

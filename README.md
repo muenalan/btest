@@ -95,7 +95,7 @@ Start a block of texts, encompassing <expected> number of *ok*.
 End of bt_begin block.
 
 ## bt_ignore_next
-Completely ignore bt_begin/bt_end block. Note that commands will be still executed, however bt_ commands will be ignored.
+Completely ignore bt_begin/bt_end block (overriding bt_if as well). Note that normal commands will be still executed, however bt_ commands will be ignored.
 ```
 bt_ignore_next
 
@@ -106,6 +106,20 @@ bt_begin
   ...
 
 bt_end
+
+bt_ignore_next
+
+
+bt_if 1
+
+bt_begin
+
+  ...
+  ... All bt_ block functions are (still) ignored
+  ...
+
+bt_end
+
 ```
 
 ## bt_if

@@ -7,7 +7,7 @@
 
 # variables
 
-export BT_VERSION=V0.003
+export BT_VERSION=V0.004
 
 export BT_REPORT=""
 
@@ -48,11 +48,15 @@ function bt_ignore_next
 
 function bt_if
 {
-    bt_echo "BT_IF(ARG1='$1')"
-    
-    if [[ ! "$1" ]]; then
+    if [[ ! "$BT_IGNORE_NEXT" ]]; then
 
-        export BT_IGNORE_NEXT=1
+	bt_echo "BT_IF(ARG1='$1')"
+	
+	if [[ ! "$1" ]]; then
+
+            export BT_IGNORE_NEXT=1
+
+	fi
 
     fi
 }

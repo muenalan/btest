@@ -20,6 +20,8 @@ bt_begin 01_testname1 1
 
   bt_declare title1
 
+  bt_call sleep 10
+  
   bt_ok
 
 bt_end
@@ -51,7 +53,7 @@ Per default, [TAP](https://testanything.org/) is printed to stdout.
 
 ```
 1..2
-ok - 01_testname1
+ok - 01_testname1 (00:00:10)
 ok - 02_testname2
 ```
 
@@ -72,7 +74,8 @@ Following environment is used to change the behavior of *btest*:
 
     BT_DEBUG - debug-level controlling the verbosity (default=0, silent)
     BT_PROTOCOL - protocol for bt_summary (default=TAP)
-    
+    BT_EPOCH_DELTA_MIN - minimal number of seconds a test uses, so the time is included in the testreport (default=0, always).
+
 # Structural functions
 
 ## bt_begin <testname> <expected>

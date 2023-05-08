@@ -157,6 +157,18 @@ function bt_nok
     fi
 }
 
+function bt_ok_if
+{
+    if [[ "$1" ]]; then
+
+	bt_ok
+
+    else
+	bt_nok
+	
+    fi
+}
+
 function bt_ok_fexists
 {
     if [[ ! "$BT_IGNORE_NEXT" ]]; then

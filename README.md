@@ -16,25 +16,27 @@ source /path/to/btest.bash
 
 # tests
 
-bt_begin 01_testname1 1 
+bt_begin 01_testname 1 
 
-  bt_declare title1
+  bt_declare 01_testname/subtest1
 
   bt_call sleep 10
-  
+
   bt_ok
 
 bt_end
 
-bt_begin 01_testname2 2
 
-  bt_declare title1
+bt_begin 02_testname 2
 
-  bt_ok
+  bt_declare 02_testname/subtest1
 
-  bt_declare title2
+  bt_ok_if $VAR21
 
-  bt_ok
+
+  bt_declare 02_testname/subtest2
+
+  bt_ok_if $VAR22
 
 bt_end
 
@@ -123,7 +125,18 @@ bt_end
 ```
 
 ## bt_if *value*
-Conditionally execute bt_begin/bt_end block. Note that normal commands will be always executed, however bt_ commands will be ignored if *value* does not evaluate to true.
+Conditionally execute bt_begin/bt_end block. Note that normal commands will be always executed, however bt_ commands will be ignored if *value* does not evaluate to true. Equivalent to:
+```
+   if [[ "$VALUE" ]]; then
+
+      bt_ok
+
+    else
+
+      bt_nok
+      
+   fi
+```
 
 ## bt_ignore_if *value*
 Conditionally ignore bt_begin/bt_end block. Note that normal commands will be always executed, however bt_ commands will be ignored.
@@ -146,6 +159,9 @@ Append a command to the testlog. Will not printed, as it is appended to the test
 
 ## bt_ok
 Append *ok* status to the testlog.
+
+## bt_ok_if *value*
+Append *ok* status to the testlog, if *value* evaluated to true.
 
 ## bt_ok_fexists *filename*
 Append *ok* status to the testlog, if the specified file exists.

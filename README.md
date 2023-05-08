@@ -70,6 +70,7 @@ When btest is called with *source*, following environment is exported:
 
 Following environment is used to change the behavior of *btest*:
 
+    BT_DEBUG - debug-level controlling the verbosity (default=0, silent)
     BT_PROTOCOL - protocol for bt_summary (default=TAP)
     
 # Structural functions

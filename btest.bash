@@ -142,7 +142,7 @@ function bt_nok
     fi
 }
 
-function bt_fexists
+function bt_ok_fexists
 {
     if [[ ! "$BT_IGNORE_NEXT" ]]; then
 
@@ -157,7 +157,7 @@ function bt_fexists
     fi
 }
 
-function bt_dexists
+function bt_ok_dexists
 {
     if [[ ! "$BT_IGNORE_NEXT" ]]; then
 
@@ -373,7 +373,7 @@ function bt_selftest
     
       bt_call "echo ABC >$FILENAME"
 
-      bt_fexists $FILENAME
+      bt_ok_fexists $FILENAME
 
     bt_end
 
@@ -388,7 +388,7 @@ function bt_selftest
       
       bt_call "mkdir $DIRNAME"
 
-      bt_dexists $DIRNAME
+      bt_ok_dexists $DIRNAME
 
     bt_end
 

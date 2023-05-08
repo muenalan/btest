@@ -101,8 +101,10 @@ Call a command.
 ## bt_declare subtestname
 Declare a subtest, as part of a test (bt_begin/bt_end).
 
+Important: This statement is required with a status function, such as: bt_ok, bt_nok, bt_skip.
+
 ## bt_comment arg [ ... ]
-Append a command to the testlog. Will be only visible when bt_summary is called.
+Append a command to the testlog. Will not printed, as it is appended to the testlog. Included into bt_summary output.
 
 ## bt_ok
 Append *ok* status to the testlog.

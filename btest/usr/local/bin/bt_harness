@@ -4,7 +4,7 @@ BT_HARNESS_VERSION=V0.001
 
 if [[ ! "$BT_DIR" ]]; then
 
-   export BT_DIR=$PWD
+   export BT_DIR=/usr/local/lib/btest/
 
 fi
 

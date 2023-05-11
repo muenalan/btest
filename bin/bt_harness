@@ -36,41 +36,47 @@ bt_echo BT_DIR=$BT_DIR
 
 bt_echo BT_HARNESS_PROVE=$BT_HARNESS_PROVE
 
+
 # script
 
-WORKDIR=$1
+if [[ ! "$*" ]]; then
 
-if [[ ! "$WORKDIR" ]]; then
+    echo -e "Usage: bt_harness testdir [testdir, ..]\n"
 
-   echo -e "Usage: bt_harness testdir\n"
+    echo "*ERROR* testdir argument is empty."
 
-   echo "*ERROR* testdir argument is empty."
-
-   exit
+    BT_ABORT=1
+    
+    exit
 fi
 
-bt_comment $(bt_status)
 
-bt_begin "Testing dir WORKDIR=$WORKDIR"
+for WORKDIR in $*; do
 
-for FILE in $WORKDIR/*.bash; do
+    bt_comment $(bt_status)
 
-    bt_comment $FILE
+    bt_begin "Testing dir WORKDIR=$WORKDIR"
 
-    bt_declare $FILE
+    for FILE in $WORKDIR/*.bash; do
 
-    if [[ "$BT_HARNESS_PROVE" > 0 ]]; then
-    
-        bt_call prove --exec bash $FILE
+	bt_comment $FILE
 
-    else
+	bt_declare $FILE
 
-        bt_call $FILE
+	if [[ "$BT_HARNESS_PROVE" > 0 ]]; then
+	    
+            bt_call prove --exec bash $FILE
 
-    fi
-    
-    bt_echo bt_harness RETURN=$?
-    
+	else
+
+            bt_call $FILE
+
+	fi
+	
+	bt_echo bt_harness RETURN=$?
+	
+    done
+
+    bt_end
+
 done
-
-bt_end

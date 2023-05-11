@@ -59,10 +59,16 @@ ok - 02_testname2
 
 Note that only blocks of tests are shown; subtests not. 
 
-### [TAP](https://testanything.org/) harness (*btest* self-test)
-You can use [prove](https://perldoc.perl.org/prove) to verify a test. *btest* comes with a small self-test (which fails a single test). You can call it as:
+### bt_harness tool ([TAP](https://testanything.org/) harness)
+You can use [prove](https://perldoc.perl.org/prove) to verify a test. 
 ```
-$ BT_SELFTEST=1 prove --exec bash ./btest.bash
+$ prove --exec bash ./testname.bash
+```
+
+This tool automatically calls all tests (*.bash) within a directory.
+
+```
+$ bt_harness testfolder1 testfolder2
 ```
 
 # Environment
@@ -73,6 +79,7 @@ When btest is called with *source*, following environment is exported:
 Following environment is used to change the behavior of *btest*:
 
     BT_DEBUG - debug-level controlling the verbosity (default=0, silent)
+    BT_ABORT - set to 1 to skip bt_summary trap at exit
     BT_PROTOCOL - protocol for bt_summary (default=TAP)
     BT_EPOCH_DELTA_MIN - minimal number of seconds a test uses, so the time is included in the testreport (default=0, always).
 

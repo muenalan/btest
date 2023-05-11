@@ -13,6 +13,12 @@ export BT_REPORT=""
 
 export BT_EPOCH_DELTA_MIN=0
 
+if [[ ! "$BT_ABORT" ]]; then
+
+    export BT_ABORT=0
+
+fi
+
 if [[ ! "$BT_DIR" ]]; then
 
    export BT_DIR=$PWD
@@ -368,7 +374,11 @@ function bt_summary
 
 function bt_finish {
 
-    bt_summary
+    if [[ ! "$BT_ABORT" > 0 ]]; then
+
+	bt_summary
+
+    fi
     
 }
 

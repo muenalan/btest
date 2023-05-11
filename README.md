@@ -5,7 +5,7 @@ bash library for testing software
 This package provides the *btest* tool and library. The library can be sourced in any bash script.
 
 ## Aim
-1. grouped into testblocks. This allows for clearer development and organization.
+1. Group tests into testblocks. This allows for clearer development and organization.
 2. Tests should be executable as standalone scripts.
 3. The *btest* commands allows for invocation of batches of tests (in directories).
 

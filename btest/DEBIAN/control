@@ -1,6 +1,0 @@
-Package: btest
-Version: 0.1
-Maintainer: MUENALAN
-Architecture: all
-Description: bash library for testing software (TAP-compatible)
-Depends: bash

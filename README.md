@@ -1,8 +1,8 @@
 # btest
-Compact single-file bash library for testing software
+bash library for testing software
 
 ## Description
-Powerful library for testing software commands in shell environments. Tests and subtests are grouped into testblocks, allowing for clearer development and organization.
+Single-file library for testing in shell environments. Tests and subtests are grouped into testblocks, allowing for clearer development and organization.
 
 ## Output
 Per default produces [TAP](https://testanything.org/) compatible output. 
@@ -12,7 +12,7 @@ Per default produces [TAP](https://testanything.org/) compatible output.
 ```
 #!/bin/bash -l
 
-source /path/to/btest.bash
+source /usr/local/lib/btest/btest.bash
 
 # tests
 
@@ -42,7 +42,7 @@ bt_end
 ```
 
 ### Invokation
-Call the file from the commandline as usual.
+Execute the file from the commandline:
 
 ```
 $ bash testfile.bash

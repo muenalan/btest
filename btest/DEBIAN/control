@@ -2,5 +2,5 @@ Package: btest
 Version: 0.1
 Maintainer: MUENALAN
 Architecture: all
-Description: Compact single-file bash library for testing software
+Description: bash library for testing software (TAP-compatible)
 Depends: bash

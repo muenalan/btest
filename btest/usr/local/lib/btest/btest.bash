@@ -7,7 +7,7 @@
 
 # variables
 
-export BT_VERSION=V0.004
+export BT_VERSION=0.01
 
 export BT_REPORT=""
 

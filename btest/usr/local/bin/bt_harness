@@ -1,6 +1,6 @@
 #!/bin/bash
 
-BT_HARNESS_VERSION=V0.001
+BT_HARNESS_VERSION=0.01
 
 if [[ ! "$BT_DIR" ]]; then
 

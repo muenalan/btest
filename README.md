@@ -46,11 +46,17 @@ bt_begin 02_testname 2
 bt_end
 ```
 
-### Invokation
+### Invocation
 Execute the file from the commandline:
 
 ```
 $ bash testfile.bash
+```
+
+or from a directory
+
+```
+$ btest testdir
 ```
 
 ### Output

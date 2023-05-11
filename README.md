@@ -39,8 +39,6 @@ bt_begin 02_testname 2
   bt_ok_if $VAR22
 
 bt_end
-
-bt_summary
 ```
 
 ### Invokation
@@ -181,7 +179,7 @@ Append *skip* status to the testlog, and skip a test (still appending an *ok* st
 Print summary of the testlog, using the [TAP](https://testanything.org/) protocol.
 
 ## bt_summary
-Print summary of the testlog. According to *$BT_PROTOCOL*, the protocol is selected.
+Bash automatically calls this function on exit of the script (via bt_finish exit trap). Prints summary of the testlog. According to *$BT_PROTOCOL*, the protocol is selected. 
 
 Note: Will flush the testlog. 
 

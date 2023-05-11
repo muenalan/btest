@@ -13,6 +13,12 @@ export BT_REPORT=""
 
 export BT_EPOCH_DELTA_MIN=0
 
+if [[ ! "$BT_DIR" ]]; then
+
+   export BT_DIR=$PWD
+
+fi
+
 if [[ ! "$BT_DEBUG" ]]; then
 
     export BT_DEBUG=0
@@ -41,10 +47,18 @@ function bt_echo
     fi
 }
 
+
+function bt_status
+{
+    echo "BT_STATUS(BT_VERSION=$BT_VERSION, BT_EPOCH_DELTA_MIN=$BT_EPOCH_DELTA_MIN, BT_DIR=$BT_DIR)"
+}
+
+
 function bt_ignore_next
 {
     export BT_IGNORE_NEXT=1    
 }
+
 
 function bt_if
 {
@@ -60,6 +74,7 @@ function bt_if
 
     fi
 }
+
 
 function bt_ignore_if
 {
@@ -120,7 +135,7 @@ function bt_comment
 {
     if [[ ! "$BT_IGNORE_NEXT" ]]; then
 
-        FORMATTED=$1
+        FORMATTED=$*
 
         bt_echo " BT_COMMENT(FORMATTED='${FORMATTED}')"
 
@@ -267,7 +282,7 @@ function bt_end
         fi
         
 
-        bt_echo "BT_STATUS(TITLE1=${BT_TITLE1}, OK=${BT_COUNT_OK}, NOK=${BT_COUNT_NOK}, SKIPPED=${BT_COUNT_SKIPPED}, BT_EPOCH_DELTA_FORMATTED=${BT_EPOCH_DELTA_FORMATTED}) : $BT_VERDICT_OKAY"
+        bt_echo "BT_END(TITLE1=${BT_TITLE1}, OK=${BT_COUNT_OK}, NOK=${BT_COUNT_NOK}, SKIPPED=${BT_COUNT_SKIPPED}, BT_EPOCH_DELTA_FORMATTED=${BT_EPOCH_DELTA_FORMATTED}) : $BT_VERDICT_OKAY"
 
 	if [ "$BT_EPOCH_DELTA" -le $BT_EPOCH_DELTA_MIN ]; then
 
@@ -351,137 +366,12 @@ function bt_summary
     unset TEST_REPORT
 }
 
+function bt_finish {
 
-function bt_selftest
-{
-    bt_comment "BT_VERSION=$BT_VERSION - bt_selftest() - expects one test to fail"
-
-    bt_if 1
-
-    bt_begin iftest1 1 
-
-      bt_declare step1
-
-      bt_ok
-
-    bt_end
-
-
-    bt_begin skiptest 1 
-
-      bt_declare step1
-
-      bt_skip
-
-    bt_end
-
-
-    bt_begin oktest 1
-
-      bt_declare step1
-
-      bt_ok
-
-    bt_end
-
-    bt_begin oktest5secs 1
-
-      bt_declare step1
-
-      sleep 5
-      
-      bt_ok
-
-    bt_end
-
-    bt_begin noktest 1
-
-      bt_declare step1
-
-      bt_nok
-
-    bt_end
-
-
-    bt_begin fileoktest 1
-
-      bt_declare checkfiletest
-
-      FILENAME=$(mktemp)
-    
-      bt_call "echo ABC >$FILENAME"
-
-      bt_ok_fexists $FILENAME
-
-    bt_end
-
-
-    bt_begin diroktest 1
-
-      bt_declare checkfiledir
-
-      DIRNAME=$(mktemp)
-
-      mv $DIRNAME ${DIRNAME}.bak
-      
-      bt_call "mkdir $DIRNAME"
-
-      bt_ok_dexists $DIRNAME
-
-    bt_end
-
-
-    bt_comment "bt_ignore_next test will be invisible"
-
-    bt_ignore_next
-    
-    bt_begin ignoretest 1
-
-      bt_nok
-
-    bt_end
-
-
-    COVERAGE=full
-
-    bt_comment "ignoretest_condition_COVERAGE_not_limited bt_ignore_if true"
-    
-    bt_ignore_if $( [[ "$COVERAGE" == "limited" ]] && echo 1 ) 
-    
-    bt_begin ignoretest_condition_COVERAGE_not_limited 1
-
-      bt_ok
-
-    bt_end
-
-
-    bt_comment "ignoretest_condition_COVERAGE_or bt_ignore_if true"
-    
-    bt_ignore_if $( [[ ! "$COVERAGE" =~ "ignoretest_condition_COVERAGE_or" ]] || [[ "$COVERAGE" == "full" ]] && echo 1 ) 
-   
-    bt_begin ignoretest_condition_COVERAGE_or 1
-
-      bt_ok
-
-    bt_end
-
-
-
-    bt_ignore_if $( [[ "$COVERAGE" == "full" ]] && echo 1 ) 
-    
-    bt_begin ignoretest_condition_COVERAGE_not_full 1
-
-      bt_ok
-
-    bt_end
-
-    
     bt_summary
+    
 }
 
-if [[ "$BT_SELFTEST" ]]; then
+trap bt_finish EXIT
 
-    bt_selftest
-
-fi
 

@@ -2,7 +2,12 @@
 bash library for testing software
 
 ## Description
-Single-file library for testing in shell environments. Tests and subtests are grouped into testblocks, allowing for clearer development and organization.
+This package provides the *btest* tool and library. The library can be sourced in any bash script.
+
+## Aim
+1. grouped into testblocks. This allows for clearer development and organization.
+2. Tests should be executable as standalone scripts.
+3. The *btest* commands allows for invocation of batches of tests (in directories).
 
 ## Output
 Per default produces [TAP](https://testanything.org/) compatible output. 
@@ -59,7 +64,7 @@ ok - 02_testname2
 
 Note that only blocks of tests are shown; subtests not. 
 
-### bt_harness tool ([TAP](https://testanything.org/) harness)
+### btest tool ([TAP](https://testanything.org/) harness)
 You can use [prove](https://perldoc.perl.org/prove) to verify a test. 
 ```
 $ prove --exec bash ./testname.bash
@@ -68,7 +73,7 @@ $ prove --exec bash ./testname.bash
 This tool automatically calls all tests (*.bash) within a directory.
 
 ```
-$ bt_harness testfolder1 testfolder2
+$ btest testfolder1 testfolder2
 ```
 
 # Environment

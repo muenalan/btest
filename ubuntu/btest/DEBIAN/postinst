@@ -1,0 +1,6 @@
+#!/bin/bash
+echo "install complete!"
+
+#bt_harness /usr/local/lib/btest/t
+
+exit $?

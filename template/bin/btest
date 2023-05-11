@@ -1,0 +1,82 @@
+#!/bin/bash
+
+BT_HARNESS_VERSION=0.01
+
+if [[ ! "$BT_DIR" ]]; then
+
+   export BT_DIR=/usr/local/lib/btest/
+
+fi
+
+if [ ! -v BT_HARNESS_PROVE ]; then
+
+   PROVE_AVAIL=`which prove`
+
+   if [[ "$PROVE_AVAIL" ]]; then
+   
+      BT_HARNESS_PROVE=1
+
+   else
+      
+      BT_HARNESS_PROVE=0
+
+   fi
+
+fi
+
+
+# BTEST source
+
+source $BT_DIR/btest.bash
+
+
+# code
+
+bt_echo BT_DIR=$BT_DIR
+
+bt_echo BT_HARNESS_PROVE=$BT_HARNESS_PROVE
+
+
+# script
+
+if [[ ! "$*" ]]; then
+
+    echo -e "Usage: btest testdir [testdir, ..]\n"
+
+    echo "*ERROR* testdir argument is empty."
+
+    BT_ABORT=1
+    
+    exit
+fi
+
+
+for WORKDIR in $*; do
+
+    bt_comment $(bt_status)
+
+    bt_begin "Testing dir WORKDIR=$WORKDIR"
+
+    for FILE in $WORKDIR/*.bash; do
+
+	bt_comment $FILE
+
+	bt_declare $FILE
+
+	if [[ "$BT_HARNESS_PROVE" > 0 ]]; then
+	    
+            bt_call prove --exec bash $FILE
+
+	else
+
+            bt_call $FILE
+
+	fi
+	
+	bt_echo subtest RETURN=$?
+	
+    done
+
+    bt_end
+
+done

@@ -1,18 +1,13 @@
-PKGNAME=btest
+MKTEMP=$(shell mktemp -d)
 
-deb:
-	dpkg-deb --build $(PKGNAME)
+ubuntu: 
+	cp -r template/bin/* ubuntu/btest/usr/local/bin/
+	cp -r template/lib/* ubuntu/btest/usr/local/lib/
 
-test:
-	bt_harness /usr/local/lib/btest/t
-
-install: deb
-	sudo dpkg -i $(PKGNAME).deb
-
-uninstall:
-	sudo dpkg --remove $(PKGNAME)
+macos:
+	echo Not implemented yet.
 
 clean:
-	rm $(PKGNAME).deb
-	find . -name '*~' |zip -rm $(shell mktemp -d)/btest-bak.zip -@
+	find ubuntu/btest/usr/local/bin/* ubuntu/btest/usr/local/lib/*|zip -rm $(MKTEMP)/btest-bak.zip -@
+	find . -name '*~' |zip -rm $(MKTEMP)/btest-bak.zip -@
 

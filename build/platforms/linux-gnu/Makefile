@@ -13,10 +13,10 @@ uninstall:
 
 install-systemwide:
 	chmod +x $(DIR_TEMPLATE)/bin/*
-	cp -r $(DIR_TEMPLATE)/bin/* $(PRE)/bin/
+	mkdir -p $(PRE)/bin && cp -r $(DIR_TEMPLATE)/bin/* $(PRE)/bin/
 	mkdir -p $(PRE)/lib/$(CONFIGURE_PKGNAME)   && cp -r $(DIR_TEMPLATE)/lib/* $(PRE)/lib/$(CONFIGURE_PKGNAME)
 	mkdir -p $(PRE)/var/$(CONFIGURE_PKGNAME)   && cp -r $(DIR_TEMPLATE)/var/* $(PRE)/var/$(CONFIGURE_PKGNAME)
-	mkdir -p $(PRE)/share/$(CONFIGURE_PKGNAME) && cp -r $(DIR_TEMPLATE)/share/* $(PRE)/share/$(CONFIGURE_PKGNAME)
+	mkdir -p $(PRE)/share/doc/$(CONFIGURE_PKGNAME) && cp -r $(DIR_TEMPLATE)/share/doc/* $(PRE)/share/doc/$(CONFIGURE_PKGNAME)
 	-mkdir ~/.config/$(CONFIGURE_PKGNAME)/
 	-cp -r .configureplus ~/.config/$(CONFIGURE_PKGNAME)/
 

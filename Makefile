@@ -1,9 +1,4 @@
 
-setup:
-	echo $(CONFIGURE_PKGNAME) > build/.configureplus/global/CONFIGURE_PKGNAME
-	CONFIGURE_PKGNAME=$(CONFIGURE_PKGNAME) ./bin/setup.sh >configure.sh
-	sh ./configure.sh
-
 platform-current:
 	cd build/ && configureplus --detect-os
 

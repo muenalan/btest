@@ -1,18 +1,18 @@
-PKGNAME=$(shell cat PKGNAME)
-REVISION=$(shell cat VERSION)
-MKTEMP=$(shell mktemp -d)
 
-ubuntu: 
-	cp -r template/bin/* ubuntu/$(PKGNAME)/usr/local/bin/
-	cp -r template/lib/* ubuntu/$(PKGNAME)/usr/local/lib/
+setup:
+	echo $(CONFIGURE_PKGNAME) > build/.configureplus/global/CONFIGURE_PKGNAME
+	CONFIGURE_PKGNAME=$(CONFIGURE_PKGNAME) ./bin/setup.sh >configure.sh
+	sh ./configure.sh
 
-macos:
-	echo Not implemented yet.
+platform-current:
+	cd build/ && configureplus --detect-os
 
-zip:
-	zip -r9 ../$(PKGNAME)-$(REVISION).zip .
+test:
+	btest t/
 
 clean:
-	find ubuntu/$(PKGNAME)/usr/local/bin/* ubuntu/$(PKGNAME)/usr/local/lib/*|zip -rm $(MKTEMP)/$(PKGNAME)-bak.zip -@
-	find . -name '*~' |zip -rm $(MKTEMP)/$(PKGNAME)-bak.zip -@
-
+	-rm configure.sh
+	-find . -name '*~' |zip -rm bak.zip -@
+	-find . -name '*.bak' |zip -rm bak.zip -@
+	-cd build/ && configureplus
+	-cd build/ && make clean

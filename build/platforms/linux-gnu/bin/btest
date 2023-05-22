@@ -1,0 +1,3 @@
+#!/bin/bash
+
+./configureplus/usr/local/bin/configureplus "$*"

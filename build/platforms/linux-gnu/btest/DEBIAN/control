@@ -1,0 +1,6 @@
+Package: ob
+Version: 0.1
+Maintainer: MUENALAN
+Architecture: all
+Description: bash dynamical objects
+Depends: bash

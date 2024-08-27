@@ -7,7 +7,7 @@ DIR_TEMPLATE=$(CONFIGURE_PKGNAME)/$(PRE)
 
 install-systemwide:
 	configureplus set CONFIGURE_PKGNAME btest
-	configureplus set --global CONFIGURE_PKGNAME btest
+	configureplus --global set CONFIGURE_PKGNAME btest
 	configureplus generate
 	chmod +x $(DIR_TEMPLATE)/bin/*
 	mkdir -p $(PRE)/bin && cp -r $(DIR_TEMPLATE)/bin/* $(PRE)/bin/

@@ -2,7 +2,8 @@
 platform-current:
 	echo $(OSTYPE) >build/.configureplus/global/CONFIGUREPLUS_SESSION
 	cd build/ && configureplus --detect-os
-
+	cd build/ && configureplus 
+	
 test:
 	btest t/
 

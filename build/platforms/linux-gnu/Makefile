@@ -6,6 +6,7 @@ PRE=/usr/local
 DIR_TEMPLATE=$(CONFIGURE_PKGNAME)/$(PRE)
 
 install-systemwide:
+	echo btest >.configureplus/session/linux-gnu/$(CONFIGURE_PKGNAME)
 	chmod +x $(DIR_TEMPLATE)/bin/*
 	mkdir -p $(PRE)/bin && cp -r $(DIR_TEMPLATE)/bin/* $(PRE)/bin/
 	make -B install-systemwide-lib

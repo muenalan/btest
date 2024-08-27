@@ -11,11 +11,11 @@ This package provides the *btest* tool and library. The library can be sourced i
 
 # INSTALLATION
     
-    $ make platform-current
+    $ make
     $ cd build/
     $ make
     $ cd platform/<ostype>
-    $ make install-systemwide
+    $ make # will install install-systemwide
     
 # Author
 

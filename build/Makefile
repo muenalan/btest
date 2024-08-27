@@ -4,7 +4,7 @@
 include .configureplus/currentsession.mk
 
 install:
-	echo btest >.configureplus/session/linux-gnu/CONFIGURE_PKGNAME
+	echo btest >.configureplus/session/linux-gnu/$(CONFIGURE_PKGNAME)
 	-mkdir -p $(CONFIGURE_DIR_OUTPUT)/$(CONFIGURE_OSTYPE)/$(CONFIGURE_PKGNAME)/usr/local/bin   && cp -r $(CONFIGURE_DIR_TEMPLATE)/bin/* $(CONFIGURE_DIR_OUTPUT)/$(CONFIGURE_OSTYPE)/$(CONFIGURE_PKGNAME)/usr/local/bin/
 	-mkdir -p $(CONFIGURE_DIR_OUTPUT)/$(CONFIGURE_OSTYPE)/$(CONFIGURE_PKGNAME)/usr/local/lib   && cp -r $(CONFIGURE_DIR_TEMPLATE)/lib/* $(CONFIGURE_DIR_OUTPUT)/$(CONFIGURE_OSTYPE)/$(CONFIGURE_PKGNAME)/usr/local/lib/
 	-mkdir -p $(CONFIGURE_DIR_OUTPUT)/$(CONFIGURE_OSTYPE)/$(CONFIGURE_PKGNAME)/usr/local/var   && cp -r $(CONFIGURE_DIR_TEMPLATE)/var/* $(CONFIGURE_DIR_OUTPUT)/$(CONFIGURE_OSTYPE)/$(CONFIGURE_PKGNAME)/usr/local/var/

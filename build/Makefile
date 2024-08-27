@@ -4,13 +4,14 @@
 include .configureplus/currentsession.mk
 
 install:
+	echo btest >.configureplus/session/linux-gnu/CONFIGURE_PKGNAME
 	-mkdir -p $(CONFIGURE_DIR_OUTPUT)/$(CONFIGURE_OSTYPE)/$(CONFIGURE_PKGNAME)/usr/local/bin   && cp -r $(CONFIGURE_DIR_TEMPLATE)/bin/* $(CONFIGURE_DIR_OUTPUT)/$(CONFIGURE_OSTYPE)/$(CONFIGURE_PKGNAME)/usr/local/bin/
 	-mkdir -p $(CONFIGURE_DIR_OUTPUT)/$(CONFIGURE_OSTYPE)/$(CONFIGURE_PKGNAME)/usr/local/lib   && cp -r $(CONFIGURE_DIR_TEMPLATE)/lib/* $(CONFIGURE_DIR_OUTPUT)/$(CONFIGURE_OSTYPE)/$(CONFIGURE_PKGNAME)/usr/local/lib/
 	-mkdir -p $(CONFIGURE_DIR_OUTPUT)/$(CONFIGURE_OSTYPE)/$(CONFIGURE_PKGNAME)/usr/local/var   && cp -r $(CONFIGURE_DIR_TEMPLATE)/var/* $(CONFIGURE_DIR_OUTPUT)/$(CONFIGURE_OSTYPE)/$(CONFIGURE_PKGNAME)/usr/local/var/
 	-mkdir -p $(CONFIGURE_DIR_OUTPUT)/$(CONFIGURE_OSTYPE)/$(CONFIGURE_PKGNAME)/usr/local/share && cp -r $(CONFIGURE_DIR_TEMPLATE)/share/* $(CONFIGURE_DIR_OUTPUT)/$(CONFIGURE_OSTYPE)/$(CONFIGURE_PKGNAME)/usr/local/share/
 	-mkdir ~/.config/$(CONFIGURE_PKGNAME)/
-	-cp -r .configureplus ~/.config/$(CONFIGURE_PKGNAME)/
-	cp .configureplus/global/CONFIGURE_PKGNAME $(CONFIGURE_DIR_OUTPUT)/$(CONFIGURE_OSTYPE)/.configureplus/global/
+	-cp -r .btest ~/.config/$(CONFIGURE_PKGNAME)/
+	cp .btest/global/CONFIGURE_PKGNAME $(CONFIGURE_DIR_OUTPUT)/$(CONFIGURE_OSTYPE)/.btest/global/
 	cd $(CONFIGURE_DIR_OUTPUT)/$(CONFIGURE_OSTYPE) && configureplus
 	$(info ******** Overwrite template folder to architecture-specific revision: $(CONFIGURE_DIR_OUTPUT)/$(CONFIGURE_OSTYPE).. ***********)
 	$(info ******** Continue with .. $ cd $(CONFIGURE_DIR_OUTPUT)/$(CONFIGURE_OSTYPE) ***********)

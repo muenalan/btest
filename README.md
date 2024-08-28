@@ -1,211 +1,137 @@
-# btest
-bash library for testing software
+# btest: Bash Testing Framework
 
 ## Description
-This package provides the *btest* tool and library. The library can be sourced in any bash script.
 
-## Aim
-1. Group tests into testblocks. This allows for clearer development and organization.
-2. Tests should be executable as standalone scripts.
-3. The *btest* commands allows for invocation of batches of tests (in directories).
+btest is a lightweight, flexible testing framework for Bash scripts. It provides a simple yet powerful way to organize, execute, and report on tests for shell scripts and command-line tools.
 
-## Output
-Per default produces [TAP](https://testanything.org/) compatible output. 
+## Features
 
-## Template: testfile.bash
+- Group tests into logical blocks for better organization
+- Execute tests as standalone scripts
+- Run batches of tests across multiple files or directories
+- TAP (Test Anything Protocol) compatible output
+- Conditional test execution
+- Time tracking for performance analysis
+- Detailed reporting and summaries
+- Test file generation
+- Parallel test execution
+- Dry run mode
+- Verbose output and configurable log levels
 
-```
-#!/bin/bash -l
+## Installation
 
-source /usr/local/lib/btest/btest.bash
-
-# tests
-
-bt_begin 01_testname 1 
-
-  bt_declare 01_testname/subtest1
-
-  bt_call sleep 10
-
-  bt_ok
-
-bt_end
-
-
-bt_begin 02_testname 2
-
-  bt_declare 02_testname/subtest1
-
-  bt_ok_if $VAR21
-
-
-  bt_declare 02_testname/subtest2
-
-  bt_ok_if $VAR22
-
-bt_end
+```bash
+git clone https://github.com/muenalan/btest.git
+cd btest
+sudo make install
 ```
 
-### Invocation
-Execute the file from the commandline:
+## Quick Start
 
-```
-$ bash testfile.bash
-```
+1. Generate a test file:
 
-or from a directory
-
-```
-$ btest testdir
+```bash
+btest generate my_first_test
 ```
 
-### Output
-Per default, [TAP](https://testanything.org/) is printed to stdout.
+2. Edit the generated file `my_first_test.bash`:
 
-```
-1..2
-ok - 01_testname1 (00:00:10)
-ok - 02_testname2
-```
+```bash
+#!/bin/bash
 
-Note that only blocks of tests are shown; subtests not. 
+# BT_DIR will be set by btest at runtime
 
-### btest tool ([TAP](https://testanything.org/) harness)
-You can use [prove](https://perldoc.perl.org/prove) to verify a test. 
-```
-$ prove --exec bash ./testname.bash
-```
+source $BT_DIR/btest.bash
 
-This tool automatically calls all tests (*.bash) within a directory.
+bt_begin "My First Test" 2
 
-```
-$ btest testfolder1 testfolder2
-```
+  bt_declare "Subtest 1"
+  bt_ok_if [[ 2 -eq 2 ]]
 
-# Environment
-When btest is called with *source*, following environment is exported:
-
-    BT_VERSION - btest library version
-
-Following environment is used to change the behavior of *btest*:
-
-    BT_DEBUG - debug-level controlling the verbosity (default=0, silent)
-    BT_ABORT - set to 1 to skip bt_summary trap at exit
-    BT_PROTOCOL - protocol for bt_summary (default=TAP)
-    BT_EPOCH_DELTA_MIN - minimal number of seconds a test uses, so the time is included in the testreport (default=0, always).
-
-# Structural functions
-The main concept of *btest* are test blocks. These are sections, which are enclosed by bt_begin/bt_end.
-```
-bt_begin
-
-  ...
-  ... block functions
-  ...
+  bt_declare "Subtest 2"
+  bt_ok_if [[ -f /etc/passwd ]]
 
 bt_end
 ```
 
-## bt_begin *testname* *expected-count*
-Start a block of texts, encompassing *expected-count* number of *ok*. If *expected-count* is not reached, this testblock will fail.
+3. Run the test:
 
-## bt_end
-End of bt_begin block. 
-
-## bt_ignore_next
-Completely ignore bt_begin/bt_end block (overriding bt_if as well). Note that normal commands will be still executed, however bt_ commands will be ignored.
-```
-bt_ignore_next
-
-bt_begin
-
-  ...
-  ... All bt_ block functions are ignored
-  ...
-
-bt_end
-
-
-bt_ignore_next # invalidates also the bt_if statement
-
-bt_if 1
-
-bt_begin
-
-  ...
-  ... All bt_ block functions are (still) ignored
-  ...
-
-bt_end
-
+```bash
+btest file my_first_test.bash
 ```
 
-## bt_if *value*
-Conditionally execute bt_begin/bt_end block. Note that normal commands will be always executed, however bt_ commands will be ignored if *value* does not evaluate to true. Equivalent to:
+## Usage
+
+btest supports a subcommand structure similar to docker:
+
 ```
-   if [[ "$VALUE" ]]; then
+Usage: btest <command> [options]
 
-      bt_ok
+Commands:
+  file       Run tests on specific files
+  folder     Run tests on all files in a folder
+  generate   Generate a new test file
+  status     Show available tests
+  help       Display help for a specific command
 
-    else
-
-      bt_nok
-      
-   fi
+Global Options:
+  -v, --version   Display the version of btest
+  -h, --help      Display this help message
 ```
 
-## bt_ignore_if *value*
-Conditionally ignore bt_begin/bt_end block. Note that normal commands will be always executed, however bt_ commands will be ignored.
+### Running Tests on Specific Files
 
-# Block functions (inside a bt_begin/bt_end block)
+```bash
+btest file [options] <file1> [file2 ...]
 
-## bt_echo *arg* [ *arg*, ... ]
-Print string
+Options:
+  -r <reporter>   Specify the reporter to use (default: tap)
+  -o <file>       Write output to a file instead of stdout
+  -v, --verbose   Enable verbose output
+  -l, --loglevel  Set the log level
+  -d, --dry-run   Perform a dry run without executing tests
 
-## bt_call *arg* [ *arg*, ... ]
-Call a command. 
+Environment variables:
+  BTEST_REPORTER      Set the default reporter
+  BTEST_OUTPUT_FILE   Set the default output file
+  BTEST_VERBOSE       Set verbose mode (0 or 1)
+  BTEST_LOG_LEVEL     Set the default log level
+  BTEST_DRY_RUN       Set dry run mode (0 or 1)
+```
 
-## bt_declare *subtestname*
-Declare a subtest, as part of a test (bt_begin/bt_end).
+### Running Tests in Folders
 
-Important: This statement is required with a status function, such as: bt_ok, bt_nok, bt_skip.
+```bash
+btest folder [options] <folder1> [folder2 ...]
 
-## bt_comment *arg* [ *arg*, ... ]
-Append a command to the testlog. Will not printed, as it is appended to the testlog. Included into bt_summary output.
+Options:
+  -r <reporter>   Specify the reporter to use (default: tap)
+  -o <file>       Write output to a file instead of stdout
+  -v, --verbose   Enable verbose output
+  -l, --loglevel  Set the log level
+  -p, --parallel  Run tests in parallel
+  -d, --dry-run   Perform a dry run without executing tests
 
-## bt_ok
-Append *ok* status to the testlog.
+Environment variables:
+  BTEST_REPORTER
+```
 
-## bt_ok_if *value*
-Append *ok* status to the testlog, if *value* evaluated to true.
+## Documentation
 
-## bt_ok_fexists *filename*
-Append *ok* status to the testlog, if the specified file exists.
+For detailed usage instructions, API reference, and examples, please see the [full documentation](docs/README.md).
 
-## bt_ok_dexists *dirname*
-Append *ok* status to the testlog, if the specified directory exists.
+## Contributing
 
-## bt_nok
-Append *not ok* status to the testlog.
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details on how to submit pull requests, report issues, or suggest improvements.
 
-## bt_skip *reason*
-Append *skip* status to the testlog, and skip a test (still appending an *ok* status to the testlog). The *reason* will appear in the testlog.
+## License
 
-# Testlog functions
+This project is licensed under the GNU General Public License v3.0. See the [LICENSE](LICENSE) file for details.
 
-## bt_summary_tap
-Print summary of the testlog, using the [TAP](https://testanything.org/) protocol.
+## Author
 
-## bt_summary
-Bash automatically calls this function on exit of the script (via bt_finish exit trap). Prints summary of the testlog. According to *$BT_PROTOCOL*, the protocol is selected. 
-
-Note: Will flush the testlog. 
-
-# Other functions
-
-## bt_selftest
-Call a small selftest of *btest*.
-
-# Author
 Murat Ünalan <murat.uenalan@gmail.com>
 
+## Acknowledgments
+
+Thanks to all contributors and users of btest who have helped improve and shape this project.

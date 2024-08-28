@@ -1,0 +1,31 @@
+name: btest CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y shellcheck
+    
+    - name: Run shellcheck
+      run: shellcheck btest.bash btest
+    
+    - name: Run btest unit tests
+      run: bash unit_tests.bash
+    
+    - name: Install btest
+      run: sudo make install
+    
+    - name: Run example tests
+      run: btest examples/

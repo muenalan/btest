@@ -21,9 +21,9 @@ FILES=$(wildcard $(DIR_TEMPLATE)/lib/*)
 
 install-systemwide-lib:
 	install -d $(PRE)/lib/$(CONFIGURE_PKGNAME) || mkdir -p $(PRE)/lib/$(CONFIGURE_PKGNAME)
-	@if [ -n "$(FILES)" ]; then \
-		echo install -m 755 -t $(PRE)/lib/$(CONFIGURE_PKGNAME) $(FILES); \
-		install -m 755 -t $(PRE)/lib/$(CONFIGURE_PKGNAME) $(FILES); \
+	@if [ -n "$(wildcard $(DIR_TEMPLATE)/lib/*)" ]; then \
+		echo rsync -ru --progress $(DIR_TEMPLATE)/lib/* $(PRE)/lib/$(CONFIGURE_PKGNAME)/; \
+		rsync -ru --progress $(DIR_TEMPLATE)/lib/* $(PRE)/lib/$(CONFIGURE_PKGNAME)/; \
 	fi
 
 FILES=$(wildcard $(DIR_TEMPLATE)/share/*)

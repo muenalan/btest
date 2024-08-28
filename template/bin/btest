@@ -1,82 +1,323 @@
 #!/bin/bash
 
+# btest - Bash Testing Framework
+# Version: 0.3.0
+# Author: Murat Ünalan <murat.uenalan@gmail.com>
+
+set -e
+
 BT_HARNESS_VERSION=0.01
 
 if [[ ! "$BT_DIR" ]]; then
 
-   export BT_DIR=/usr/local/lib/btest/
+    export BT_DIR=/usr/local/lib/btest/
 
 fi
 
 if [ ! -v BT_HARNESS_PROVE ]; then
 
-   PROVE_AVAIL=`which prove`
+    PROVE_AVAIL=`which prove`
 
-   if [[ "$PROVE_AVAIL" ]]; then
-   
-      BT_HARNESS_PROVE=1
+    if [[ "$PROVE_AVAIL" ]]; then
 
-   else
-      
-      BT_HARNESS_PROVE=0
+	BT_HARNESS_PROVE=1
 
-   fi
+    else
+
+	BT_HARNESS_PROVE=0
+
+    fi
 
 fi
 
 
-# BTEST source
+# Source the btest library
 
 source $BT_DIR/btest.bash
 
 
-# code
+# Function to display help
+display_help() {
+    cat << EOF
+Usage: btest <command> [options]
 
-bt_echo BT_DIR=$BT_DIR
+Commands:
+  file       Run tests on specific files
+  folder     Run tests on all files in a folder
+  generate   Generate a new test file
+  status     Show available tests
+  help       Display help for a specific command
 
-bt_echo BT_HARNESS_PROVE=$BT_HARNESS_PROVE
+Run 'btest help <command>' for more information on a specific command.
 
+Global Options:
+  -v, --version   Display the version of btest
+  -h, --help      Display this help message
+EOF
+}
 
-# script
+# Function to display version
+display_version() {
+    echo "btest version $BT_VERSION"
+}
 
-if [[ ! "$*" ]]; then
+# Subcommand functions
 
-    echo -e "Usage: btest testdir [testdir, ..]\n"
-
-    echo "*ERROR* testdir argument is empty."
-
-    BT_ABORT=1
-    
-    exit
-fi
-
-
-for WORKDIR in $*; do
-
-    bt_comment $(bt_status)
-
-    bt_begin "Testing dir WORKDIR=$WORKDIR"
-
-    for FILE in $WORKDIR/*.bash; do
-
-	bt_comment $FILE
-
-	bt_declare $FILE
-
-	if [[ "$BT_HARNESS_PROVE" > 0 ]]; then
-	    
-            bt_call prove --exec bash $FILE
-
-	else
-
-            bt_call $FILE
-
-	fi
-	
-	bt_echo subtest RETURN=$?
-	
+cmd_file() {
+    local OPTIND
+    while getopts ":r:o:vl:d" opt; do
+        case $opt in
+            r) REPORTER=${OPTARG:-$BTEST_REPORTER} ;;
+            o) OUTPUT_FILE=${OPTARG:-$BTEST_OUTPUT_FILE} ;;
+            v) VERBOSE=${BTEST_VERBOSE:-1} ;;
+            l) LOG_LEVEL=${OPTARG:-$BTEST_LOG_LEVEL} ;;
+            d) DRY_RUN=${BTEST_DRY_RUN:-1} ;;
+            :) echo "Option -$OPTARG requires an argument." >&2; return 1 ;;
+            \?) echo "Invalid option: -$OPTARG" >&2; return 1 ;;
+        esac
     done
+    shift $((OPTIND-1))
 
-    bt_end
+    if [ $# -eq 0 ]; then
+        echo "Error: No files specified" >&2
+        cmd_help file
+        return 1
+    fi
 
-done
+    [ "$VERBOSE" = "1" ] && echo "Verbose mode enabled"
+    [ "$LOG_LEVEL" ] && echo "Log level set to $LOG_LEVEL"
+    [ "$DRY_RUN" = "1" ] && echo "Dry run mode enabled"
+
+    for file in "$@"; do
+        if [ ! -f "$file" ]; then
+            echo "Error: File not found: $file" >&2
+            continue
+        fi
+        echo "Running tests in file: $file"
+        [ "$DRY_RUN" != "1" ] && bash "$file"
+    done
+}
+
+cmd_folder() {
+    local OPTIND
+    while getopts ":r:o:vl:pd" opt; do
+        case $opt in
+            r) REPORTER=${OPTARG:-$BTEST_REPORTER} ;;
+            o) OUTPUT_FILE=${OPTARG:-$BTEST_OUTPUT_FILE} ;;
+            v) VERBOSE=${BTEST_VERBOSE:-1} ;;
+            l) LOG_LEVEL=${OPTARG:-$BTEST_LOG_LEVEL} ;;
+            p) PARALLEL=${BTEST_PARALLEL:-1} ;;
+            d) DRY_RUN=${BTEST_DRY_RUN:-1} ;;
+            :) echo "Option -$OPTARG requires an argument." >&2; return 1 ;;
+            \?) echo "Invalid option: -$OPTARG" >&2; return 1 ;;
+        esac
+    done
+    shift $((OPTIND-1))
+
+    if [ $# -eq 0 ]; then
+        echo "Error: No folder specified" >&2
+        cmd_help folder
+        return 1
+    fi
+
+    [ "$VERBOSE" = "1" ] && echo "Verbose mode enabled"
+    [ "$LOG_LEVEL" ] && echo "Log level set to $LOG_LEVEL"
+    [ "$PARALLEL" = "1" ] && echo "Parallel execution enabled"
+    [ "$DRY_RUN" = "1" ] && echo "Dry run mode enabled"
+
+    for folder in "$@"; do
+        if [ ! -d "$folder" ]; then
+            echo "Error: Folder not found: $folder" >&2
+            continue
+        fi
+        echo "Running tests in folder: $folder"
+        if [ "$PARALLEL" = "1" ]; then
+            find "$folder" -name "*.bash" -type f | xargs -P0 -I{} bash {}
+        else
+            for file in "$folder"/*.bash; do
+                if [ -f "$file" ]; then
+                    echo "Running test file: $file"
+                    [ "$DRY_RUN" != "1" ] && bash "$file"
+                fi
+            done
+        fi
+    done
+}
+
+cmd_generate() {
+    local OPTIND
+    while getopts ":o:h" opt; do
+        case $opt in
+            o) OUTPUT_DIR=${OPTARG:-$BTEST_OUTPUT_DIR} ;;
+            h) cmd_help generate; return ;;
+            :) echo "Option -$OPTARG requires an argument." >&2; return 1 ;;
+            \?) echo "Invalid option: -$OPTARG" >&2; return 1 ;;
+        esac
+    done
+    shift $((OPTIND-1))
+
+    if [ $# -eq 0 ]; then
+        echo "Error: No test name specified" >&2
+        cmd_help generate
+        return 1
+    fi
+
+    test_name=$1
+    output_dir=${OUTPUT_DIR:-$PWD}
+    output_file="$output_dir/${test_name}_test.bash"
+
+    cat > "$output_file" << EOF
+#!/bin/bash
+
+source \$BT_DIR/btest.bash
+
+bt_begin "$test_name" 1
+
+  bt_declare "Example test"
+  # Add your test logic here
+  bt_ok
+
+bt_end
+EOF
+
+    echo "Generated test file: $output_file"
+}
+
+cmd_status() {
+    local OPTIND
+    while getopts ":vl:" opt; do
+        case $opt in
+            v) VERBOSE=${BTEST_VERBOSE:-1} ;;
+            l) LOG_LEVEL=${OPTARG:-$BTEST_LOG_LEVEL} ;;
+            :) echo "Option -$OPTARG requires an argument." >&2; return 1 ;;
+            \?) echo "Invalid option: -$OPTARG" >&2; return 1 ;;
+        esac
+    done
+    shift $((OPTIND-1))
+
+    [ "$VERBOSE" = "1" ] && echo "Verbose mode enabled"
+    [ "$LOG_LEVEL" ] && echo "Log level set to $LOG_LEVEL"
+
+    if ! command -v tree &> /dev/null; then
+        echo "Error: 'tree' command not found. Please install it to use the status command." >&2
+        return 1
+    fi
+
+    echo "Available tests:"
+    tree -P "*_test.bash" --prune
+}
+
+cmd_help() {
+    case $1 in
+        file)
+            cat << EOF
+Usage: btest file [options] <file1> [file2 ...]
+
+Run tests on specific files.
+
+Options:
+  -r <reporter>   Specify the reporter to use (default: tap)
+  -o <file>       Write output to a file instead of stdout
+  -v, --verbose   Enable verbose output
+  -l, --loglevel  Set the log level
+  -d, --dry-run   Perform a dry run without executing tests
+
+Environment variables:
+  BTEST_REPORTER      Set the default reporter
+  BTEST_OUTPUT_FILE   Set the default output file
+  BTEST_VERBOSE       Set verbose mode (0 or 1)
+  BTEST_LOG_LEVEL     Set the default log level
+  BTEST_DRY_RUN       Set dry run mode (0 or 1)
+EOF
+            ;;
+        folder)
+            cat << EOF
+Usage: btest folder [options] <folder1> [folder2 ...]
+
+Run tests on all files in specified folders.
+
+Options:
+  -r <reporter>   Specify the reporter to use (default: tap)
+  -o <file>       Write output to a file instead of stdout
+  -v, --verbose   Enable verbose output
+  -l, --loglevel  Set the log level
+  -p, --parallel  Run tests in parallel
+  -d, --dry-run   Perform a dry run without executing tests
+
+Environment variables:
+  BTEST_REPORTER      Set the default reporter
+  BTEST_OUTPUT_FILE   Set the default output file
+  BTEST_VERBOSE       Set verbose mode (0 or 1)
+  BTEST_LOG_LEVEL     Set the default log level
+  BTEST_PARALLEL      Set parallel execution mode (0 or 1)
+  BTEST_DRY_RUN       Set dry run mode (0 or 1)
+EOF
+            ;;
+        generate)
+            cat << EOF
+Usage: btest generate [options] <test_name>
+
+Generate a new test file.
+
+Options:
+  -o <directory>  Specify the output directory (default: current directory)
+
+Environment variables:
+  BTEST_OUTPUT_DIR    Set the default output directory
+EOF
+            ;;
+        status)
+            cat << EOF
+Usage: btest status [options]
+
+Show available tests.
+
+Options:
+  -v, --verbose   Enable verbose output
+  -l, --loglevel  Set the log level
+
+Environment variables:
+  BTEST_VERBOSE       Set verbose mode (0 or 1)
+  BTEST_LOG_LEVEL     Set the default log level
+EOF
+            ;;
+        *)
+            display_help
+            ;;
+    esac
+}
+
+# Main command processing
+case $1 in
+    file)
+        shift
+        cmd_file "$@"
+        ;;
+    folder)
+        shift
+        cmd_folder "$@"
+        ;;
+    generate)
+        shift
+        cmd_generate "$@"
+        ;;
+    status)
+        shift
+        cmd_status "$@"
+        ;;
+    help)
+        shift
+        cmd_help "$@"
+        ;;
+    -v|--version)
+        display_version
+        ;;
+    -h|--help)
+        display_help
+        ;;
+    *)
+        echo "Error: Unknown command '$1'" >&2
+        display_help
+        exit 1
+        ;;
+esac

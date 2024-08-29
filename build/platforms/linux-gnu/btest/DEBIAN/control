@@ -1,6 +1,6 @@
-Package: ob
-Version: 0.1
+Package: btest
+Version: 0.3.0
 Maintainer: MUENALAN
 Architecture: all
-Description: bash dynamical objects
+Description: btest is a lightweight, flexible testing framework using bash
 Depends: bash

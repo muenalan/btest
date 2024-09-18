@@ -105,7 +105,8 @@ parse_options() {
 
 cmd_file() {
     local OPTIND
-
+    OPTIND=1
+    
     if ! parse_options "$@"; then
 	cmd_help file
 	return 1
@@ -136,6 +137,7 @@ cmd_file() {
 cmd_folder() {
 
     local OPTIND
+    OPTIND=1
 
     if ! parse_options "$@"; then
 	cmd_help file
@@ -176,6 +178,8 @@ cmd_folder() {
 
 cmd_generate() {
     local OPTIND
+    OPTIND=1
+
     while getopts ":o:h" opt; do
         case $opt in
             o) OUTPUT_DIR=${OPTARG:-$BTEST_OUTPUT_DIR} ;;
@@ -215,6 +219,8 @@ EOF
 
 cmd_status() {
     local OPTIND
+    OPTIND=1
+
     while getopts ":vl:" opt; do
         case $opt in
             v) VERBOSE=${BTEST_VERBOSE:-1} ;;

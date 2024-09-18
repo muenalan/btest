@@ -15,7 +15,7 @@ install:
 	-cp -r .btest ~/.config/$(CONFIGURE_PKGNAME)/
 	cd $(CONFIGURE_DIR_OUTPUT)/$(CONFIGURE_OSTYPE) && configureplus
 	cp .configureplus/global/CONFIGURE_PKGNAME $(CONFIGURE_DIR_OUTPUT)/$(CONFIGURE_OSTYPE)/.configureplus/global/	
-	cp .configureplus/session/linux-gnu/CONFIGURE_PKGNAME $(CONFIGURE_DIR_OUTPUT)/$(CONFIGURE_OSTYPE)/.configureplus/session/linux-gnu/	
+	cp .configureplus/session/$(CONFIGURE_OSTYPE)/CONFIGURE_PKGNAME $(CONFIGURE_DIR_OUTPUT)/$(CONFIGURE_OSTYPE)/.configureplus/session/$(CONFIGURE_OSTYPE)/	
 	$(info ******** Overwrite template folder to architecture-specific revision: $(CONFIGURE_DIR_OUTPUT)/$(CONFIGURE_OSTYPE).. ***********)
 	$(info ******** Continue with .. $ cd $(CONFIGURE_DIR_OUTPUT)/$(CONFIGURE_OSTYPE) ***********)
 

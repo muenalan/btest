@@ -14,7 +14,7 @@ if [[ ! "$BT_DIR" ]]; then
 
 fi
 
-if [ ! -v BT_HARNESS_PROVE ]; then
+if [ ! -z "$BT_HARNESS_PROVE" ]; then
 
     PROVE_AVAIL=`which prove`
 

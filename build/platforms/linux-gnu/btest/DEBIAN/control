@@ -3,4 +3,4 @@ Version: 0.3.0
 Maintainer: MUENALAN
 Architecture: all
 Description: btest is a lightweight, flexible testing framework using bash
-Depends: bash
+Depends: bash, libtap-parser-perl, libjson-xs-perl

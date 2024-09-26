@@ -10,7 +10,7 @@ This package provides the *btest* tool and library. The library can be sourced i
 - The *btest* commands allows for invocation of batches of tests (in directories).
 
 # INSTALLATION
-    
+
     $ make
     $ cd build/
     $ make

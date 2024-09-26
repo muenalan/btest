@@ -1,0 +1,53 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+use TAP::Parser;
+use Data::Dump qw(pp);
+
+my $file = $ENV{TEST_FILENAME}; #'path/to/your/tap_output.txt';  # TAP output file
+
+my $tap = join( '', <> );
+
+my @subtests = split /^(\d+..\d+)$/m, $tap;
+
+my $pre = shift @subtests;
+
+my $i=1;
+
+    my $liner = ":::::::::::::" x 8;
+    my $linen = "-------------" x 8;
+
+    if( $pre )
+    {
+	printf( ":: %-98s ::\n", $_ ) for split /\n/, $pre;
+    }
+
+do
+{
+	
+    my $plan = shift @subtests;
+
+    my $tap = shift @subtests;
+
+    chomp( $tap = "$plan\n$tap" );
+
+
+    print( "| $linen\n", map { "| $_\n" } split( /\n/, $tap ), "$linen", );
+    
+    my $parser = TAP::Parser->new( { tap => $tap } );
+
+    $parser->run;
+
+    if( $parser->parse_errors )
+    {
+	STDERR->print( ": ! Parse error: ", $_, "\n" ) for $parser->parse_errors;
+    }
+    
+    printf( "| result: %s (test nr. %02d)\n", ($parser->has_problems ? 'has problems' : 'ok'), $i );
+
+    print( "\n" );
+    
+    $i++;
+}
+while( @subtests );

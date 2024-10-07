@@ -20,7 +20,7 @@ my $i=1;
 
     if( $pre )
     {
-	printf( ":: %-98s ::\n", $_ ) for split /\n/, $pre;
+	printf( ":: %-100s ::\n", $_ ) for split /\n/, $pre;
     }
 
 do

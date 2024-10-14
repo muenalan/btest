@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # btest.bash - Core library for the btest Bash Testing Framework
-# Version: 0.3.0
+# Version: 0.3.1
 # Author: Murat Ünalan <murat.uenalan@gmail.com>
 
 # Set default values for environment variables if not already set
-: ${BT_VERSION:=0.3.0}
+: ${BT_VERSION:=0.3.1}
 : ${BT_REPORT:=""}
 : ${BT_EPOCH_DELTA_MIN:=0}
 : ${BT_ABORT:=0}

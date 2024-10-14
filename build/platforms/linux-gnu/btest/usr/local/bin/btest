@@ -58,7 +58,9 @@ EOF
 
 # Function to display version
 display_version() {
-    echo "btest version $BT_VERSION"
+
+    echo "BT_VERSION=$BT_VERSION"
+
 }
 
 # Subcommand functions
@@ -101,6 +103,12 @@ parse_options() {
     done
 
     return 0
+}
+
+cmd_version() {
+
+    display_version
+
 }
 
 cmd_file() {
@@ -325,6 +333,10 @@ EOF
 
 # Main command processing
 case $1 in
+    version)
+        shift
+        cmd_version "$@"
+        ;;
     file)
         shift
         cmd_file "$@"

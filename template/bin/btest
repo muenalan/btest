@@ -6,7 +6,7 @@
 
 set -e
 
-BT_HARNESS_VERSION=0.01
+BT_HARNESS_VERSION=0.02
 
 if [[ ! "$BT_DIR" ]]; then
 
@@ -69,6 +69,10 @@ display_version() {
 parse_options() {
     while [[ $# -gt 0 ]]; do
 	case $1 in
+	    -t|--tree)
+		OPT_FLAG_TREE=${2:-$BTEST_OPT_FLAG_TREE}
+		shift 2
+		;;
 	    -r|--reporter)
 		REPORTER=${2:-$BTEST_REPORTER}
 		shift 2
@@ -164,22 +168,40 @@ cmd_folder() {
     [ "$LOG_LEVEL" ] && echo "Log level set to $LOG_LEVEL"
     [ "$PARALLEL" = "1" ] && echo "Parallel execution enabled"
     [ "$DRY_RUN" = "1" ] && echo "Dry run mode enabled"
+    [ "$OPT_FLAG_TREE" = "1" ] && echo "Tree enabled"
 
     for folder in "$@"; do
         if [ ! -d "$folder" ]; then
             echo "Error: Folder not found: $folder" >&2
             continue
         fi
-        echo "Running tests in folder: $folder"
+
+        echo "# Test results in folder: $folder "
+
         if [ "$PARALLEL" = "1" ]; then
-            find "$folder" -name "*.bash" -type f | xargs -P0 -I{} bash {}
+            find "$folder" -name "*_test.bash" -type f | xargs -P0 -I{} bash {}
         else
-            for file in "$folder"/*.bash; do
+
+            if [[ "$OPT_FLAG_TREE" -gt 0 ]]; then
+                
+            for file in $(find "$folder" -name "*_test.bash" -type f); do
                 if [ -f "$file" ]; then
-                    echo "Running test file: $file"
+                    echo "## Test file: $file"
                     [ "$DRY_RUN" != "1" ] && bash "$file"
                 fi
             done
+
+            else
+
+                for file in $(find "$folder" -maxdepth 1 -name "*_test.bash" -type f); do
+                    if [ -f "$file" ]; then
+                        echo "## Test file: $file"
+                        [ "$DRY_RUN" != "1" ] && bash "$file"
+                    fi
+                done
+
+            fi
+            
         fi
     done
 }
@@ -268,6 +290,7 @@ Options:
 
 Environment variables:
   BTEST_REPORTER      Set the default reporter
+  BTEST_REPORTER      Set the default reporter
   BTEST_OUTPUT_FILE   Set the default output file
   BTEST_VERBOSE       Set verbose mode (0 or 1)
   BTEST_LOG_LEVEL     Set the default log level
@@ -287,6 +310,7 @@ Options:
   -l, --loglevel  Set the log level
   -p, --parallel  Run tests in parallel
   -d, --dry-run   Perform a dry run without executing tests
+  -t              Tree of tests (descend into all subfolders)
 
 Environment variables:
   BTEST_REPORTER      Set the default reporter
@@ -295,6 +319,7 @@ Environment variables:
   BTEST_LOG_LEVEL     Set the default log level
   BTEST_PARALLEL      Set parallel execution mode (0 or 1)
   BTEST_DRY_RUN       Set dry run mode (0 or 1)
+  BTEST_OPT_FLAG_TREE Set the default subfolder behavior
 EOF
             ;;
         generate)

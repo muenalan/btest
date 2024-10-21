@@ -5,13 +5,14 @@
 # Author: Murat Ünalan <murat.uenalan@gmail.com>
 
 # Set default values for environment variables if not already set
-: ${BT_VERSION:=0.3.1}
+: ${BT_VERSION:=0.3.2}
 : ${BT_REPORT:=""}
 : ${BT_EPOCH_DELTA_MIN:=0}
 : ${BT_ABORT:=0}
 : ${BT_DIR:=$PWD}
 : ${BT_DEBUG:=0}
 : ${BT_PROTOCOL:=TAP}
+: ${BT_OPT_FLAG_TREE:=0}
 
 # bt_echo: Print debug messages if debug mode is enabled
 # Usage: bt_echo [message...]

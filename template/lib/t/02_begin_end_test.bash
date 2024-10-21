@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source $BT_DIR/btest.bash
+source $BT_OPT_DIR/btest.bash
 
 COVERAGE=notebook1
 

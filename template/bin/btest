@@ -182,7 +182,7 @@ function cmd_folder() {
             find "$folder" -name "*_test.bash" -type f | xargs -P0 -I{} bash {}
         else
 
-            if [[ "$OPT_FLAG_TREE" -gt 0 ]]; then
+            if [[ "$BT_OPT_FLAG_TREE" -gt 0 ]]; then
                 
             for file in $(find "$folder" -name "*_test.bash" -type f); do
                 if [ -f "$file" ]; then

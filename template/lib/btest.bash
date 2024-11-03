@@ -5,7 +5,7 @@
 # Author: Murat Ünalan <murat.uenalan@gmail.com>
 
 # Set default values for environment variables if not already set
-: ${BT_VERSION:=0.4.1}
+: ${BT_VERSION:=0.4.2}
 : ${BT_OPT_VERBOSE_DEFAULT:=0}
 : ${BT_OPT_REPORT_DEFAULT:=""}
 : ${BT_OPT_REPORTER_DEFAULT:=""}

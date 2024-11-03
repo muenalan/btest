@@ -142,6 +142,9 @@ function cmd_file() {
             continue
         fi
         echo "Running tests in file: $file"
+
+        BT_INFO_FILE=$file
+        
         [ "$BT_OPT_FLAG_DRY_RUN" != "1" ] && bash "$file"
     done
 }
@@ -177,6 +180,8 @@ function cmd_folder() {
         fi
 
         echo "FOLDER: Test results in folder: $folder "
+
+        BT_INFO_FOLDER=$folder
 
         if [ "$PARALLEL" = "1" ]; then
             find "$folder" -name "*_test.bash" -type f | xargs -P0 -I{} bash {}

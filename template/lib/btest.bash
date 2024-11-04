@@ -192,10 +192,34 @@ function bt_nok() {
 # bt_ok_if: Mark the current subtest as passed if the condition is true
 # Usage: bt_ok_if [condition]
 function bt_ok_if() {
-    if [[ "$@" ]]; then
+    # Get all but the last argument as the condition
+    local condition=("${@:1:$#}")
+    
+    if "${condition[@]}"; then
+        echo "bt_ok_if return true for '${condition[@]}'"
         bt_ok
+        return 0
     else
+        echo "bt_ok_if return false for '${condition[@]}'"
         bt_nok
+        return 1
+    fi
+}
+
+# bt_nok_if: Mark the current subtest as passed if the condition is false
+# Usage: bt_nok_if [condition]
+function bt_nok_if() {
+    # Get all but the last argument as the condition
+    local condition=("${@:1:$#}")
+    
+    if "${condition[@]}"; then
+        echo "bt_nok_if return false for '${condition[@]}'"
+        bt_nok
+        return 1
+    else
+        echo "bt_nok_if return true for '${condition[@]}'"
+        bt_ok
+        return 0
     fi
 }
 

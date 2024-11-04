@@ -86,22 +86,24 @@ function bt_ok_if() {
 
 =cut
 
-
 function bt_selftest
 {
+#    ok_if command -v git "Git is installed"
+#    ok_if command -v blabla "Blabla is installed"
+    
     bt_begin bt_ok_if_1 1 
 
       bt_declare bt_ok_if_1
 
-      bt_ok_if [ 1 ] "$BT_TITLE1"
+      bt_ok_if [ "1" ]
 
     bt_end
 
-    bt_begin bt_ok_if_0 1 
+    bt_begin bt_nok_if_empty 1 
 
-      bt_declare bt_ok_if_0
+      bt_declare bt_nok_if_empty
 
-      bt_ok_if [ 0 ] "$BT_TITLE1"
+      bt_nok_if [ "" ]
 
     bt_end
 

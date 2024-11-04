@@ -79,7 +79,7 @@ deb:
 	mv $(CONFIGURE_PKGNAME).deb ../packages/$(CONFIGURE_PKGNAME)-$(CONFIGURE_VERSION)-$(CONFIGURE_OSTYPE).deb
 
 test:
-	btest /usr/local/lib/$(CONFIGURE_PKGNAME)/t
+	btest folder /usr/local/lib/$(CONFIGURE_PKGNAME)/selftest
 
 install-deb: deb
 	dpkg -i ../packages/$(CONFIGURE_PKGNAME)-$(CONFIGURE_VERSION)-$(CONFIGURE_OSTYPE).deb

@@ -1,5 +1,5 @@
 
-# Generated with configureplus (CONFIGUREPLUS_VERSION=0.14.5, CONFIGUREPLUS_PWD=/home/muenalan/git-workdirs/btest/build/platforms/linux-gnu)
+# Generated with configureplus (CONFIGUREPLUS_VERSION=0.15.2, CONFIGUREPLUS_PWD=/home/muenalan/git-workdirs/btest/build/platforms/linux-gnu)
 # Note: space before a comment are part of a variable
 
 CONFIGUREPLUS_SESSION=$(shell cat .configureplus/global/CONFIGUREPLUS_SESSION)

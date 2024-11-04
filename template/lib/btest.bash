@@ -196,11 +196,11 @@ function bt_ok_if() {
     local condition=("${@:1:$#}")
     
     if "${condition[@]}"; then
-        echo "bt_ok_if return true for '${condition[@]}'"
+        bt_echo "bt_ok_if return true for '${condition[@]}'"
         bt_ok
         return 0
     else
-        echo "bt_ok_if return false for '${condition[@]}'"
+        bt_echo "bt_ok_if return false for '${condition[@]}'"
         bt_nok
         return 1
     fi
@@ -213,11 +213,11 @@ function bt_nok_if() {
     local condition=("${@:1:$#}")
     
     if "${condition[@]}"; then
-        echo "bt_nok_if return false for '${condition[@]}'"
+        bt_echo "bt_nok_if return false for '${condition[@]}'"
         bt_nok
         return 1
     else
-        echo "bt_nok_if return true for '${condition[@]}'"
+        bt_echo "bt_nok_if return true for '${condition[@]}'"
         bt_ok
         return 0
     fi

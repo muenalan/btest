@@ -1,10 +1,11 @@
 #!/bin/bash
 
 # btest - Bash Testing Framework
-# Version: 0.3.0
 # Author: Murat Ünalan <murat.uenalan@gmail.com>
 
 set -e
+
+#set -x  # Enable trace debugging
 
 BT_HARNESS_VERSION=0.02
 
@@ -35,6 +36,7 @@ fi
 
 source $BT_OPT_DIR/btest.bash
 
+trap '' EXIT   # overwrite the automatic trap from btest.bash
 
 # Function to display help
 function display_help() {
@@ -54,6 +56,8 @@ Global Options:
   -v, --version   Display the version of btest
   -h, --help      Display this help message
 EOF
+
+    return 0
 }
 
 # Function to display version
@@ -61,6 +65,7 @@ function display_version() {
 
     echo "BT_VERSION=$BT_VERSION"
 
+    return 0
 }
 
 # Subcommand functions
@@ -136,17 +141,37 @@ function cmd_file() {
     [ "$BT_OPT_LOG_LEVEL" ] && bt_echo "OPT: Log level set to $BT_OPT_LOG_LEVEL"
     [ "$BT_OPT_FLAG_DRY_RUN" = "1" ] && bt_echo "OPT: Dry run mode enabled"
 
+
+    if [[ "$BT_OPT_FLAG_MARKDOWN_MODE" -gt 0 ]]; then
+        
+        echo "# TEST HARNESS INFO"
+
+        echo "The test harness 'btest' has been used. Following further information:"
+
+        echo " - BT_VERSION=$BT_VERSION"
+
+    fi
+    
     for file in "$@"; do
         if [ ! -f "$file" ]; then
             echo "Error: File not found: $file" >&2
             continue
         fi
-        echo "Running tests in file: $file"
+
+        bt_echo "Running tests in file: $file"
 
         BT_INFO_FILE=$file
         
-        [ "$BT_OPT_FLAG_DRY_RUN" != "1" ] && bash "$file"
+        if [[ "$BT_OPT_FLAG_DRY_RUN" != "1" ]]; then
+
+            bash "$file"
+
+            echo "'btest file $file' sub-bash return value $?"
+        fi
+        
     done
+
+    return 0
 }
 
 function cmd_folder() {
@@ -179,7 +204,7 @@ function cmd_folder() {
             continue
         fi
 
-        echo "FOLDER: Test results in folder: $folder "
+        echo "FOLDER: $folder "
 
         BT_INFO_FOLDER=$folder
 
@@ -191,8 +216,9 @@ function cmd_folder() {
                 
             for file in $(find "$folder" -name "*_test.bash" -type f); do
                 if [ -f "$file" ]; then
-                    echo "  FILE: Test file: $file"
-                    [ "$BT_OPT_FLAG_DRY_RUN" != "1" ] && bash "$file"
+                    echo "  FILE: $file"
+
+                    [ "$BT_OPT_FLAG_DRY_RUN" != "1" ] && BT_INFO_FOLDER="$BT_INFO_FOLDER" BT_INFO_FILE="$file" bash "$file"
                 fi
             done
 
@@ -200,8 +226,9 @@ function cmd_folder() {
 
                 for file in $(find "$folder" -maxdepth 1 -name "*_test.bash" -type f); do
                     if [ -f "$file" ]; then
-                        echo "  FILE: Test file: $file"
-                        [ "$BT_OPT_FLAG_DRY_RUN" != "1" ] && bash "$file"
+                        bt_echo "  FILE: Test file: $file"
+
+                        [ "$BT_OPT_FLAG_DRY_RUN" != "1" ] && BT_INFO_FOLDER="$BT_INFO_FOLDER" BT_INFO_FILE=$file bash "$file"
                     fi
                 done
 
@@ -209,6 +236,8 @@ function cmd_folder() {
             
         fi
     done
+
+    return 0
 }
 
 function cmd_generate() {
@@ -276,6 +305,8 @@ function cmd_status() {
 
     echo "Available tests:"
     tree -P "*_test.bash" --prune
+
+    return 0
 }
 
 function cmd_help() {
@@ -299,6 +330,7 @@ Environment variables:
   BT_OPT_VERBOSE       Set verbose mode (0 or 1)
   BT_OPT_LOG_LEVEL     Set the default log level
   BT_OPT_FLAG_DRY_RUN       Set dry run mode (0 or 1)
+  BT_OPT_FLAG_MARKDOWN_MODE Toggle extra markdown output
 EOF
             ;;
         folder)
@@ -324,6 +356,7 @@ Environment variables:
   BT_OPT_PARALLEL      Set parallel execution mode (0 or 1)
   BT_OPT_FLAG_DRY_RUN       Set dry run mode (0 or 1)
   BT_OPT_FLAG_TREE Set the default subfolder behavior
+  BT_OPT_FLAG_MARKDOWN_MODE Toggle extra markdown output
 EOF
             ;;
         generate)
@@ -358,6 +391,8 @@ EOF
             display_help
             ;;
     esac
+
+    return 0
 }
 
 
@@ -366,7 +401,7 @@ EOF
 
 # Main command processing
 
-BT_DECLARE_PRE="      " bt_init VERBOSE REPORTER OUTPUT_DIR EPOCH_DELTA_MIN ABORT DIR_DEFAULT DEBUG LOG_LEVEL FLAG_DRY_RUN FLAG_TREE
+BT_DECLARE_PRE="      " bt_init VERBOSE REPORTER OUTPUT_DIR EPOCH_DELTA_MIN ABORT DIR_DEFAULT DEBUG LOG_LEVEL FLAG_DRY_RUN FLAG_TREE FLAG_MARKDOWN_MODE
 
 BT_DECLARE_PRE="export" bt_init EPOCH_DELTA_MIN PROTOCOL
 
@@ -410,6 +445,8 @@ case $1 in
         fi
 
         display_help
+
         exit 1
         ;;
 esac
+

@@ -4,11 +4,9 @@ source $BT_OPT_DIR/btest.bash
 
 function bt_selftest
 {
-    bt_comment $(bt_status)
-
     bt_if 1
 
-    bt_begin iftest1 1 
+    bt_begin iftest1 1 "Check bt_begin/bt_end executation upon bt_if"
 
       bt_declare step1
 
@@ -17,7 +15,7 @@ function bt_selftest
     bt_end
 
 
-    bt_begin skiptest 1 
+    bt_begin skiptest 1 "check bt_skip"
 
       bt_declare step1
 
@@ -26,7 +24,7 @@ function bt_selftest
     bt_end
 
 
-    bt_begin oktest 1
+    bt_begin oktest 1 "check bt_ok alone"
 
       bt_declare step1
 
@@ -35,7 +33,7 @@ function bt_selftest
     bt_end
 
 
-    bt_begin oktest5secs 1
+    bt_begin oktest5secs 1 "check if sleep5 is tolerated"
 
       bt_declare step1
 
@@ -46,7 +44,7 @@ function bt_selftest
     bt_end
 
 
-    bt_begin fileoktest 1
+    bt_begin fileoktest 1 "check bt_ok_fexists"
 
       bt_declare checkfiletest
 
@@ -59,7 +57,7 @@ function bt_selftest
     bt_end
 
 
-    bt_begin diroktest 1
+    bt_begin diroktest 1 "check bt_ok_dexists"
 
       bt_declare checkfiledir
 
@@ -78,7 +76,7 @@ function bt_selftest
 
     bt_ignore_next
     
-    bt_begin ignoretest 1
+    bt_begin ignoretest 1 "check for bt_nok if previous block is under bt_ignore_next"
 
       bt_nok
 
@@ -91,7 +89,7 @@ function bt_selftest
     
     bt_ignore_if $( [[ "$COVERAGE" == "limited" ]] && echo 1 ) 
     
-    bt_begin ignoretest_condition_COVERAGE_not_limited 1
+    bt_begin ignoretest_condition_COVERAGE_not_limited 1 "bt_ok if previous bt_ignore_if is true"
 
       bt_ok
 

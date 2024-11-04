@@ -1,11 +1,10 @@
 #!/bin/bash
 
 # btest.bash - Core library for the btest Bash Testing Framework
-# Version: 0.3.1
 # Author: Murat Ünalan <murat.uenalan@gmail.com>
 
 # Set default values for environment variables if not already set
-: ${BT_VERSION:=0.4.2}
+: ${BT_VERSION:=0.4.4}
 : ${BT_OPT_VERBOSE_DEFAULT:=0}
 : ${BT_OPT_REPORT_DEFAULT:=""}
 : ${BT_OPT_REPORTER_DEFAULT:=""}
@@ -18,6 +17,7 @@
 : ${BT_OPT_LOG_LEVEL_DEFAULT:=0}
 : ${BT_OPT_FLAG_DRY_RUN_DEFAULT:=0}
 : ${BT_OPT_FLAG_TREE_DEFAULT:=0}
+: ${BT_OPT_FLAG_MARKDOWN_MODE_DEFAULT:=0}
 
 
 
@@ -28,13 +28,13 @@ BT_STATIC_DEBUG_IMPORTANT=1
 # bt_init: setup the environment from default variables etc.
 #
 
-function bt_declare_with_default() {
+function bt_variable_declare_with_default() {
     local varname="$1"                      # The first argument is the name of the variable (e.g., "BT_OPT_REPORTER")
     local varname_default="${1}_DEFAULT"                      # The first argument is the name of the variable (e.g., "BT_OPT_REPORTER")
     local default_value="${!varname_default}"                 # The second argument is the default value to assign if unset (optional)
 
     if [[ "$BT_OPT_DEBUG" -gt $BT_STATIC_DEBUG_DETAILED ]]; then
-        echo "bt_declare_with_default: varname=$varname (current value='${!varname}'), varname_default=$varname_default ('$default_value')..."
+        echo "bt_variable_declare_with_default: varname=$varname (current value='${!varname}'), varname_default=$varname_default ('$default_value')..."
     fi
     
     # Dynamically assign a value to the variable name passed
@@ -43,7 +43,7 @@ function bt_declare_with_default() {
     eval "$BT_DECLARE_PRE ${varname}=${!varname:-$default_value}"
 
     if [[ "$BT_OPT_DEBUG" -gt $BT_STATIC_DEBUG_DETAILED ]]; then
-        echo "bt_declare_with_default: verify $varname='${!varname}'"
+        echo "bt_variable_declare_with_default: verify $varname='${!varname}'"
     fi
 
     
@@ -57,7 +57,7 @@ function bt_init() {
 
     for VARNAME in $@; do
 
-        bt_declare_with_default "BT_OPT_$VARNAME"
+        bt_variable_declare_with_default "BT_OPT_$VARNAME"
 
     done
 }
@@ -130,6 +130,14 @@ function bt_begin() {
         export BT_EPOCH_BEGIN=$(date +%s)
 
         bt_echo -e "\n\nBT_BEGIN(TITLE1=${BT_TITLE1}, TITLE2=${BT_TITLE2}, EXPECTED=${BT_COUNT_EXPECTED})"
+
+        if [[ "$BT_OPT_PROTOCOL" == "MARKDOWN" ]]; then
+            if [[ "$BT TITLE2" ]]; then
+                echo "# MARKDOWN: ${BT_TITLE2} (${BT_TITLE1})"
+            else
+                echo "# MARKDOWN: ${BT_TITLE1}"
+            fi
+        fi
     fi
 }
 
@@ -138,7 +146,12 @@ function bt_begin() {
 function bt_declare() {
     if [[ ! "$BT_IGNORE_NEXT" ]]; then
         export BT_SUBTITLE1=$1
+
         bt_echo " BT_DECLARE(BT_SUBTITLE1=${BT_SUBTITLE1})"
+
+        if [[ "$BT_OPT_PROTOCOL" == "MARKDOWN" ]]; then
+            echo "## BT_DECLARE: BT_TITLE1='$BT_TITLE1' BT_TITLE2='$BT_SUBTITLE1'"
+        fi
     fi
 }
 
@@ -179,7 +192,7 @@ function bt_nok() {
 # bt_ok_if: Mark the current subtest as passed if the condition is true
 # Usage: bt_ok_if [condition]
 function bt_ok_if() {
-    if [[ "$1" ]]; then
+    if [[ "$@" ]]; then
         bt_ok
     else
         bt_nok
@@ -262,9 +275,9 @@ function bt_end() {
         bt_echo "BT_END(TITLE1=${BT_TITLE1}, OK=${BT_COUNT_OK}, NOK=${BT_COUNT_NOK}, SKIPPED=${BT_COUNT_SKIPPED}, BT_EPOCH_DELTA_FORMATTED=${BT_EPOCH_DELTA_FORMATTED}) : $BT_VERDICT_OKAY"
 
         if [ "$BT_EPOCH_DELTA" -le $BT_OPT_EPOCH_DELTA_MIN ]; then
-            FORMATTED="${BT_VERDICT_OKAY_SHORT} - ${BT_TITLE1}"
+            FORMATTED="${BT_VERDICT_OKAY_SHORT} - $BT_INFO_FILE/${BT_TITLE1} ${BT_TITLE2}"
         else
-            FORMATTED="${BT_VERDICT_OKAY_SHORT} - ${BT_TITLE1} (t=$BT_EPOCH_DELTA_FORMATTED)"
+            FORMATTED="${BT_VERDICT_OKAY_SHORT} - $BT_INFO_FILE/${BT_TITLE1} ${BT_TITLE2} (t=$BT_EPOCH_DELTA_FORMATTED)"
         fi
 
         bt_echo "bt_end - FORMATTED=$FORMATTED"
@@ -292,6 +305,8 @@ function bt_end() {
 function bt_summary_tap() {
     bt_echo "\n\nBT_REPORT_BEGIN(format=TAP)"
 
+    if [[ "$BT_REPORT" ]]; then
+
     bt_echo "bt_summary_tap()  - DUMP BT_REPORT: $BT_REPORT"
 
     while IFS=';' read -ra RESULTS; do
@@ -303,37 +318,136 @@ function bt_summary_tap() {
         done
 
         let COUNT--
+        
         echo 1..$MAX
 
         for ENTRY in "${RESULTS[@]}"; do
             echo "$ENTRY"
         done
+        
     done <<< "$BT_REPORT"
 
+    fi
+    
     bt_echo "BT_REPORT_END"
+    
+    return 0
 }
+
+# bt_summary_tap: Generate a TAP-format summary of the test results
+# Usage: bt_summary_tap
+function bt_summary_markdown() {
+    bt_echo "\n\nBT_REPORT_BEGIN(format=MARKDOWN)"
+
+    bt_echo "bt_summary_tap()  - DUMP BT_REPORT: $BT_REPORT"
+
+    if [[ "$BT_REPORT" ]]; then
+
+        while IFS=';' read -ra RESULTS; do
+            MAX=0
+            for ENTRY in "${RESULTS[@]}"; do
+                if [[ ! $ENTRY =~ ^# ]]; then
+                    let MAX++
+                fi
+            done
+
+            let COUNT--
+            echo "# TEST COUNTS EXPECTED 1..$MAX"
+
+            for ENTRY in "${RESULTS[@]}"; do
+                echo "## TEST ENTRY: $ENTRY"
+            done
+        done <<< "$BT_REPORT"
+
+    fi
+    
+    bt_echo "BT_REPORT_END"
+
+    return 0
+}
+
+# bt_summary_terminal: Generate a TERMINAL-format summary of the test results
+# Usage: bt_summary_terminal
+function bt_summary_terminal() {
+    bt_echo "\n\nBT_REPORT_BEGIN(format=TERMINAL)"
+
+    bt_echo "bt_summary_terminal()  - DUMP BT_REPORT: $BT_REPORT"
+
+    if [[ "$BT_REPORT" ]]; then
+        
+        while IFS=';' read -ra RESULTS; do
+            MAX=0
+            for ENTRY in "${RESULTS[@]}"; do
+                if [[ ! $ENTRY =~ ^# ]]; then
+                    let MAX++
+                fi
+            done
+
+            let COUNT--
+            echo 1..$MAX
+
+            for ENTRY in "${RESULTS[@]}"; do
+                echo "$ENTRY"
+
+                #            echo -e "\e[32m✓ OK\e[0m - $message"
+                #            echo -e "\e[31m✗ FAIL\e[0m - $message"
+
+            done
+
+        done <<< "$BT_REPORT"
+
+    fi
+    
+    bt_echo "BT_REPORT_END"
+
+    return 0
+}
+
 
 # bt_summary: Generate a summary of the test results
 # Usage: bt_summary
 function bt_summary() {
+
     bt_echo "bt_summary (Script=$0) - BT_OPT_PROTOCOL=$BT_OPT_PROTOCOL"
 
     if [[ "$BT_OPT_PROTOCOL" == "TAP" ]]; then
         bt_summary_tap
+    elif [[ "$BT_OPT_PROTOCOL" == "TERMINAL" ]]; then
+        bt_summary_TERMINAL
+    elif [[ "$BT_OPT_PROTOCOL" == "MARKDOWN" ]]; then
+        bt_summary_markdown
     fi
+
     unset BT_REPORT
+
+    return 0
 }
 
 # bt_finish: Cleanup function to be called at script exit
 # Usage: Not to be called directly, set as a trap
 function bt_finish() {
 
+    local exit_code=$?
+
     bt_echo "bt_finish (Script=$0) - BT_REPORT=$BT_REPORT"
     
     if [[ ! "$BT_ABORT" > 0 ]]; then
         bt_summary
     fi
+
+    return $exit_code
 }
+
+
+
+#if [[ ! "$BT_TRAP_FINISH" ]]; then
+    
+bt_echo "Installing $0 trap EXIT bt_finish" >&2
 
 # Set the bt_finish function as a trap for script exit
 trap bt_finish EXIT
+#trap 'echo "Exit code: $?"' EXIT
+
+#export BT_TRAP_FINISH=1
+
+#fi

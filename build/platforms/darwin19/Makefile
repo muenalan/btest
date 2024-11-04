@@ -5,6 +5,8 @@ include .configureplus/currentsession.mk
 PRE=/usr/local
 DIR_TEMPLATE=$(CONFIGURE_PKGNAME)/$(PRE)
 
+.PHONY: test
+
 install-systemwide:
 	configureplus set CONFIGURE_PKGNAME btest
 	configureplus --global set CONFIGURE_PKGNAME btest
@@ -79,7 +81,8 @@ deb:
 	mv $(CONFIGURE_PKGNAME).deb ../packages/$(CONFIGURE_PKGNAME)-$(CONFIGURE_VERSION)-$(CONFIGURE_OSTYPE).deb
 
 test:
-	btest folder /usr/local/lib/$(CONFIGURE_PKGNAME)/t
+	@echo "Running tests in /usr/local/lib/$(CONFIGURE_PKGNAME)/selftest .." 
+	btest folder /usr/local/lib/$(CONFIGURE_PKGNAME)/selftest
 
 install-deb: deb
 	dpkg -i ../packages/$(CONFIGURE_PKGNAME)-$(CONFIGURE_VERSION)-$(CONFIGURE_OSTYPE).deb

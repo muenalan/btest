@@ -3,9 +3,11 @@
 
 include .configureplus/currentsession.mk
 
+.PHONY: install extra init test zip tar.gz clean
+
 install:
-	configureplus set CONFIGURE_PKGNAME btest
-	configureplus --global set CONFIGURE_PKGNAME btest
+	configureplus set CONFIGURE/PKGNAME btest
+	configureplus --global set CONFIGURE/PKGNAME btest
 	configureplus generate
 	-mkdir -p $(CONFIGURE_DIR_OUTPUT)/$(CONFIGURE_OSTYPE)/$(CONFIGURE_PKGNAME)/usr/local/bin   && cp -r $(CONFIGURE_DIR_TEMPLATE)/bin/* $(CONFIGURE_DIR_OUTPUT)/$(CONFIGURE_OSTYPE)/$(CONFIGURE_PKGNAME)/usr/local/bin/
 	-mkdir -p $(CONFIGURE_DIR_OUTPUT)/$(CONFIGURE_OSTYPE)/$(CONFIGURE_PKGNAME)/usr/local/lib   && cp -r $(CONFIGURE_DIR_TEMPLATE)/lib/* $(CONFIGURE_DIR_OUTPUT)/$(CONFIGURE_OSTYPE)/$(CONFIGURE_PKGNAME)/usr/local/lib/
@@ -14,8 +16,8 @@ install:
 	-mkdir ~/.config/$(CONFIGURE_PKGNAME)/
 	-cp -r .btest ~/.config/$(CONFIGURE_PKGNAME)/
 	cd $(CONFIGURE_DIR_OUTPUT)/$(CONFIGURE_OSTYPE) && configureplus
-	cp .configureplus/global/CONFIGURE_PKGNAME $(CONFIGURE_DIR_OUTPUT)/$(CONFIGURE_OSTYPE)/.configureplus/global/	
-	cp .configureplus/session/$(CONFIGURE_OSTYPE)/CONFIGURE_PKGNAME $(CONFIGURE_DIR_OUTPUT)/$(CONFIGURE_OSTYPE)/.configureplus/session/$(CONFIGURE_OSTYPE)/	
+	cp -r .configureplus/global/CONFIGURE $(CONFIGURE_DIR_OUTPUT)/$(CONFIGURE_OSTYPE)/.configureplus/global/	
+	cp -r .configureplus/session/$(CONFIGURE_OSTYPE)/CONFIGURE $(CONFIGURE_DIR_OUTPUT)/$(CONFIGURE_OSTYPE)/.configureplus/session/$(CONFIGURE_OSTYPE)/	
 	$(info ******** Overwrite template folder to architecture-specific revision: $(CONFIGURE_DIR_OUTPUT)/$(CONFIGURE_OSTYPE).. ***********)
 	$(info ******** Continue with .. $ cd $(CONFIGURE_DIR_OUTPUT)/$(CONFIGURE_OSTYPE) ***********)
 

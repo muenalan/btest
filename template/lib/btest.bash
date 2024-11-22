@@ -195,7 +195,7 @@ function bt_ok_if() {
     # Get all but the last argument as the condition
     local condition=("${@:1:$#}")
     
-    if "${condition[@]}"; then
+    if eval "${condition[@]}"; then
         bt_echo "bt_ok_if return true for '${condition[@]}'"
         bt_ok
         return 0
@@ -411,8 +411,12 @@ function bt_summary_terminal() {
             echo 1..$MAX
 
             for ENTRY in "${RESULTS[@]}"; do
-                echo "$ENTRY"
 
+                ENTRY=$(echo "$ENTRY" | sed \
+                                            -e 's/not ok -/\\e[31m✗ NOK\\e[0m -/g' \
+                                            -e 's/ok -/\\e[32m✓ OK\\e[0m -/g')
+                                     
+                echo -e "$ENTRY"
                 #            echo -e "\e[32m✓ OK\e[0m - $message"
                 #            echo -e "\e[31m✗ FAIL\e[0m - $message"
 
@@ -437,7 +441,7 @@ function bt_summary() {
     if [[ "$BT_OPT_PROTOCOL" == "TAP" ]]; then
         bt_summary_tap
     elif [[ "$BT_OPT_PROTOCOL" == "TERMINAL" ]]; then
-        bt_summary_TERMINAL
+        bt_summary_terminal
     elif [[ "$BT_OPT_PROTOCOL" == "MARKDOWN" ]]; then
         bt_summary_markdown
     fi

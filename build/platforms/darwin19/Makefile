@@ -5,11 +5,11 @@ include .configureplus/currentsession.mk
 PRE=/usr/local
 DIR_TEMPLATE=$(CONFIGURE_PKGNAME)/$(PRE)
 
-.PHONY: test
+.PHONY: test install-systemwide extra install-systemwide-lib install-systemwide-share install-systemwide-share install-systemwide-doc install-userprofile uninstall-userprofile zip archive-master archive
 
 install-systemwide:
-	configureplus set CONFIGURE_PKGNAME btest
-	configureplus --global set CONFIGURE_PKGNAME btest
+	configureplus set CONFIGURE/PKGNAME btest
+	configureplus --global set CONFIGURE/PKGNAME btest
 	configureplus generate
 	chmod +x $(DIR_TEMPLATE)/bin/*
 	mkdir -p $(PRE)/bin && cp -r $(DIR_TEMPLATE)/bin/* $(PRE)/bin/

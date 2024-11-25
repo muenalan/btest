@@ -5,3 +5,4 @@ OSTYPE ?= $(shell echo $$OSTYPE)
 
 setup:
 	echo $(OSTYPE) >build/.configureplus/global/CONFIGUREPLUS/SESSION
+	echo btest     >build/.configureplus/session/linux-gnu/CONFIGURE/PKGNAME

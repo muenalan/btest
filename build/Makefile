@@ -6,6 +6,7 @@ include .configureplus/currentsession.mk
 .PHONY: install extra init test zip tar.gz clean
 
 install:
+	configureplus bootstrap
 	configureplus set CONFIGURE/PKGNAME btest
 	configureplus --global set CONFIGURE/PKGNAME btest
 	configureplus generate

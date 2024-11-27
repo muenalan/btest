@@ -1,5 +1,5 @@
 
-# Generated with configureplus (CONFIGUREPLUS_VERSION=0.16.2, CONFIGUREPLUS_PWD=/Users/muenalan/git-workdirs/github.com/muenalan/bash/btest/build/platforms/darwin19)
+# Generated with configureplus (CONFIGUREPLUS_VERSION=0.16.3, CONFIGUREPLUS_PWD=/Users/muenalan/git-workdirs/github.com/muenalan/bash/btest/build/platforms/darwin19)
 
 CONFIGURE_OSTYPE='darwin19'
 CONFIGURE_DIR_OUTPUT='platforms'
@@ -7,9 +7,9 @@ CONFIGURE_GIT_TAG='v0.0.1'
 CONFIGURE_VERSION='0.0.1'
 CONFIGURE_DIR_TEMPLATE='../template'
 CONFIGURE_PKGNAME='btest'
-CONFIGURE_MKTEMP='/var/folders/zz/zyxvpxvq6csfxvn_n0000000000000/T/tmp.Lfdvjuk5'
+CONFIGURE_MKTEMP='/var/folders/zz/zyxvpxvq6csfxvn_n0000000000000/T/tmp.ZTpzKKuv'
 CONFIGURE_BASH_PROFILE_FILE='/Users/muenalan/.bash_profile'
 CONFIGURE_FLAG_TOOL_BTEST='/usr/local/bin/btest'
-CONFIGURE_TIMESTAMP='Fri Nov 22 15:06:53 CET 2024'
+CONFIGURE_TIMESTAMP='Wed Nov 27 14:17:07 CET 2024'
 CONFIGUREPLUS_DIR_CONFIG='/Users/muenalan/.config/'
 CONFIGUREPLUS_SESSION='darwin19'

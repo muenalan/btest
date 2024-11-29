@@ -8,10 +8,10 @@
    "CONFIGURE_VERSION" : "0.0.1"
    "CONFIGURE_DIR_TEMPLATE" : "../template"
    "CONFIGURE_PKGNAME" : "btest"
-   "CONFIGURE_MKTEMP" : "/var/folders/zz/zyxvpxvq6csfxvn_n0000000000000/T/tmp.cUY6VGmy"
+   "CONFIGURE_MKTEMP" : "/var/folders/zz/zyxvpxvq6csfxvn_n0000000000000/T/tmp.flZ2eAyd"
    "CONFIGURE_BASH_PROFILE_FILE" : "/Users/muenalan/.bash_profile"
    "CONFIGURE_FLAG_TOOL_BTEST" : "/usr/local/bin/btest"
-   "CONFIGURE_TIMESTAMP" : "Fri Nov 29 11:54:05 CET 2024",
+   "CONFIGURE_TIMESTAMP" : "Fri Nov 29 12:07:18 CET 2024",
    "CONFIGUREPLUS_DIR_CONFIG" : "/Users/muenalan/.config/",
    "CONFIGUREPLUS_SESSION" : "darwin19"
   }

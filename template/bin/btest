@@ -201,11 +201,9 @@ function cmd_file() {
 
         bt_echo "Running tests in file: $file"
 
-        BT_INFO_FILE=$file
-        
         if [[ "$BT_OPT_FLAG_DRY_RUN" != "1" ]]; then
 
-            BT_FLAG_TEST=true BT_HARNESS_VERSION=$BT_HARDNESS_VERSION BT_ARGS_REMAINDER="${BT_ARGS_REMAINDER[@]}" bash "$file"
+            BT_INFO_FILE=$file BT_FLAG_TEST=true BT_HARNESS_VERSION=$BT_HARDNESS_VERSION BT_ARGS_REMAINDER="${BT_ARGS_REMAINDER[@]}" bash "$file"
 
             bt_echo "'btest file $file' sub-bash return value $?"
         fi

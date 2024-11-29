@@ -4,7 +4,7 @@
 # Author: Murat Ünalan <murat.uenalan@gmail.com>
 
 # Set default values for environment variables if not already set
-: ${BT_VERSION:=0.4.4}
+: ${BT_VERSION:=0.4.5}
 : ${BT_OPT_VERBOSE_DEFAULT:=0}
 : ${BT_OPT_REPORT_DEFAULT:=""}
 : ${BT_OPT_REPORTER_DEFAULT:=""}
@@ -363,7 +363,7 @@ function bt_summary_tap() {
 function bt_summary_markdown() {
     bt_echo "\n\nBT_REPORT_BEGIN(format=MARKDOWN)"
 
-    bt_echo "bt_summary_tap()  - DUMP BT_REPORT: $BT_REPORT"
+    bt_echo "bt_summary_markdown()  - DUMP BT_REPORT: $BT_REPORT"
 
     if [[ "$BT_REPORT" ]]; then
 

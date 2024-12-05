@@ -46,6 +46,7 @@ Usage: btest <command> [options]
 Commands:
   file       Run tests on specific files
   folder     Run tests on all files in a folder
+  command    Run tests on a command (in PATH)
   generate   Generate a new test file
   status     Show available tests
   help       Display help for a specific command
@@ -453,6 +454,18 @@ case $1 in
     file)
         shift
         cmd_file "$@"
+        ;;
+    command)
+        shift
+        CMD=$1
+        CMD_FOUND=`which $CMD`
+        shift
+
+        if [[ "$CMD_FOUND" ]]; then
+            cmd_file "$CMD_FOUND" $@
+        else
+            echo "Failed to find command CMD=$CMD" >&2
+        fi
         ;;
     folder)
         shift
